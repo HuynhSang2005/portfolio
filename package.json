@@ -9,7 +9,8 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "ci": "biome ci ."
+    "ci": "biome ci .",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.2.3",
@@ -22,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "husky": "^9.1.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
