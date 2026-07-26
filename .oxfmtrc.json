@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    ".next/**",
+    "node_modules/**",
+    "out/**",
+    "dist/**",
+    "coverage/**",
+    "bun.lock",
+    "skills-lock.json",
+    ".cursor/**",
+    ".agents/**",
+    ".impeccable/**"
+  ]
+}
