@@ -2,14 +2,20 @@
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "ignorePatterns": [
     ".next/**",
+    ".open-next/**",
+    ".wrangler/**",
     "node_modules/**",
     "out/**",
     "dist/**",
     "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
     "bun.lock",
     "skills-lock.json",
     ".cursor/**",
     ".agents/**",
-    ".impeccable/**"
+    ".impeccable/**",
+    "supabase/.temp/**",
+    "supabase/.branches/**"
   ]
 }
