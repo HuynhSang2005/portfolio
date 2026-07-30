@@ -1,0 +1,43 @@
+{
+  "plugins": {
+    "context7-plugin": {
+      "enabled": true
+    },
+    "cloudflare": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
+    },
+    "superpowers": {
+      "enabled": true
+    },
+    "continual-learning": {
+      "enabled": true
+    },
+    "tavily": {
+      "enabled": true
+    },
+    "cli-for-agent": {
+      "enabled": true
+    },
+    "shadcn": {
+      "enabled": true
+    },
+    "gsap-skills": {
+      "enabled": true
+    },
+    "modern-web-guidance": {
+      "enabled": true
+    },
+    "thermos": {
+      "enabled": true
+    },
+    "react-doctor": {
+      "enabled": true
+    },
+    "leonxlnx-taste-skill/taste-skill": {
+      "enabled": true
+    }
+  }
+}
