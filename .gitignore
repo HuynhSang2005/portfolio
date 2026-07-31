@@ -56,3 +56,15 @@ next-env.d.ts
 # supabase
 supabase/.branches
 supabase/.temp
+
+# agent tooling (local only, not committed)
+.agents/
+.cursor/
+.impeccable/
+skills-lock.json
+
+# reference templates (not part of this repo)
+portfolio-template-ui-ux/
+
+# playwright local cache
+.playwright/

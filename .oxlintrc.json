@@ -22,6 +22,8 @@
     ".cursor/**",
     ".agents/**",
     ".impeccable/**",
+    ".playwright/**",
+    "portfolio-template-ui-ux/**",
     "supabase/.temp/**",
     "supabase/.branches/**"
   ]

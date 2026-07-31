@@ -15,6 +15,9 @@
     ".cursor/**",
     ".agents/**",
     ".impeccable/**",
+    ".playwright/**",
+    "portfolio-template-ui-ux/**",
+    "*.tsbuildinfo",
     "supabase/.temp/**",
     "supabase/.branches/**"
   ]

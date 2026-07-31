@@ -43,7 +43,7 @@ Portfolio site: Next.js App Router (`src/app`), TypeScript strict, Tailwind CSS,
 
 ## Supabase
 
-- Clients: `src/lib/supabase/server.ts` (RSC / Server Actions / Route Handlers), `src/lib/supabase/client.ts` (browser), middleware helper in `src/lib/supabase/middleware.ts`.
+- Clients: `src/lib/supabase/server.ts` (RSC / Server Actions / Route Handlers), `src/lib/supabase/client.ts` (browser), session refresh helper in `src/lib/supabase/proxy.ts` wired from `src/proxy.ts` (Next 16 `proxy` convention; the old `middleware.ts` file convention is deprecated).
 - Never expose `SUPABASE_SERVICE_ROLE_KEY` to the client or `NEXT_PUBLIC_*`.
 - Do not commit `.env.local` or real secrets. Use `.env.example` as the template.
 - Schema/migrations live under `supabase/` when added; do not invent production schema changes without migrations.
