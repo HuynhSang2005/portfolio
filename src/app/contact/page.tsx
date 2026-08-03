@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/section";
 import { RevealOnLoad } from "@/components/ui/reveal-on-load";
 import { siteConfig } from "@/config/site";
 import { ContactForm } from "@/features/contact/components/contact-form";
+import { MailtoLink } from "@/features/contact/components/mailto-link";
 
 const CONTACT_DESCRIPTION =
   "Questions, project ideas, or just want to say hi — drop a message below.";
@@ -25,15 +26,11 @@ export default async function ContactPage() {
           <div className="mt-6 mb-8">
             <h1 className="mb-1 font-bold text-2xl tracking-tight">Contact</h1>
             <p className="mb-4 text-muted-foreground text-sm">{CONTACT_DESCRIPTION}</p>
-            <p className="text-muted-foreground text-sm">
-              Prefer email?{" "}
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="font-medium text-foreground underline underline-offset-4"
-              >
-                {siteConfig.email}
-              </a>
-            </p>
+            {siteConfig.email ? (
+              <p className="text-muted-foreground text-sm">
+                Prefer email? <MailtoLink email={siteConfig.email} />
+              </p>
+            ) : null}
           </div>
         </RevealOnLoad>
         <Section>

@@ -17,6 +17,10 @@ vi.mock("@/features/contact/components/contact-form", () => ({
   ContactForm: () => <div data-testid="contact-form" />,
 }));
 
+vi.mock("@/lib/hooks/use-item-hover-sound", () => ({
+  useItemHoverSound: () => () => {},
+}));
+
 import { UiStoreProvider } from "@/providers/ui-store-provider";
 
 function renderPage(ui: React.ReactElement) {
