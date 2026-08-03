@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { EXPERIENCES } from "@/config/experience";
@@ -54,5 +54,14 @@ describe("Experiences", () => {
     for (const skill of position.skills ?? []) {
       expect(screen.getAllByText(skill).length).toBeGreaterThan(0);
     }
+  });
+
+  it("closes the current employer collapsible on second trigger click", () => {
+    renderWithProvider(<Experiences />);
+    const current = EXPERIENCES.find((e) => e.isCurrentEmployer)!;
+    const trigger = screen.getByRole("button", { name: new RegExp(current.companyName) });
+    expect(trigger.hasAttribute("data-panel-open")).toBe(true);
+    fireEvent.click(trigger);
+    expect(trigger.hasAttribute("data-panel-open")).toBe(false);
   });
 });

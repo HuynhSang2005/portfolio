@@ -1,29 +1,120 @@
+import type { Metadata } from "next";
+
 import { FloatingHeader } from "@/components/layout/floating-header";
 import { ScrollArea } from "@/components/layout/scroll-area";
 import { Section } from "@/components/layout/section";
 import Separator from "@/components/layout/separator";
+import { RevealOnLoad } from "@/components/ui/reveal-on-load";
 import { siteConfig } from "@/config/site";
+import { Experiences } from "@/features/home/components/experiences";
+import { GitHubContribution } from "@/features/home/components/github-contribution";
+import Info from "@/features/home/components/info";
+import { PronounceMyName } from "@/features/home/components/pronounce-my-name";
+import { Projects } from "@/features/home/components/projects";
+import { SkillsVenn } from "@/features/home/components/skills-venn";
+import { Testimonials } from "@/features/home/components/testimonials";
+import { WordmarkFooter } from "@/features/home/components/wordmark-footer";
 
-export default function Home() {
+/** Metadata trang chủ — tagline làm title, description từ site config. */
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: siteConfig.tagline,
+    description: siteConfig.description,
+  };
+}
+
+/** Trang chủ — composition đầy đủ các section Home theo thứ tự template. */
+export default async function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteConfig.name,
+  };
+
   return (
-    <ScrollArea useScrollAreaId>
-      <FloatingHeader scrollTitle={siteConfig.name} />
-      <div className="content-wrapper">
-        <div className="content">
-          <Section>
-            <h1 className="font-semibold text-2xl tracking-tight">{siteConfig.name}</h1>
-            <p className="text-muted-foreground">{siteConfig.tagline}</p>
-          </Section>
-          <Separator />
-          <Section>
-            {Array.from({ length: 12 }, (_, i) => (
-              <p key={i} className="py-4 text-muted-foreground text-sm">
-                Placeholder content block {i + 1} — replaced by the real home page in P2.
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Info show={["time", "screen"]} />
+      <ScrollArea useScrollAreaId className="">
+        <FloatingHeader scrollTitle={siteConfig.name} />
+
+        <Separator />
+
+        {/* Hero Section */}
+        <Section>
+          <RevealOnLoad delay={0} duration={0.5}>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h1 className="font-semibold text-2xl">{siteConfig.name}</h1>
+                <PronounceMyName name={siteConfig.name} />
+              </div>
+              <p className="font-mono text-sm tracking-wider text-muted-foreground uppercase">
+                {siteConfig.jobTitle}
               </p>
-            ))}
-          </Section>
-        </div>
-      </div>
-    </ScrollArea>
+            </div>
+          </RevealOnLoad>
+
+          <RevealOnLoad delay={0.15} duration={0.5}>
+            <div className="mt-6 space-y-3 text-foreground/70">
+              {siteConfig.bio.map((paragraph, i) => (
+                <p key={i} className="leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </RevealOnLoad>
+
+          <RevealOnLoad delay={0.3} duration={0.6}>
+            <SkillsVenn
+              profileImage="/assets/profile.jpg"
+              skills={siteConfig.skillsVenn}
+              className="mt-8"
+            />
+          </RevealOnLoad>
+        </Section>
+
+        <Separator />
+
+        {/* Testimonials Section */}
+        <Section>
+          <Testimonials />
+        </Section>
+
+        <Separator />
+
+        {/* GitHub Contribution Section */}
+        <Section>
+          <GitHubContribution />
+        </Section>
+
+        <Separator />
+
+        {/* Projects Section */}
+        <Section>
+          <Projects />
+        </Section>
+
+        <Separator />
+
+        {/* Experiences Section */}
+        <Section>
+          <Experiences />
+        </Section>
+
+        <Separator />
+
+        {/* Wordmark Footer */}
+        <Section className="px-0 py-0 sm:px-0 md:py-0">
+          <WordmarkFooter brandName={siteConfig.name} />
+        </Section>
+
+        <Separator />
+        {/* Bottom spacing — matches dock height */}
+        <div className="h-[clamp(80px,10vh,200px)] shrink-0" />
+      </ScrollArea>
+    </>
   );
 }
