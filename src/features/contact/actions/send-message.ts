@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { Resend } from "resend";
 
 import { contactSchema } from "@/features/contact/lib/contact-schema";
+import { getContactSecrets } from "@/features/contact/lib/contact-secrets";
 import { verifyTurnstile } from "@/features/contact/lib/turnstile";
 
 /** Kết quả trả về của Server Action gửi liên hệ. */
@@ -49,8 +50,9 @@ export async function sendMessage(input: unknown): Promise<SendMessageResult> {
   }
 
   const ip = await clientIp();
+  const secrets = await getContactSecrets();
 
-  if (!(await verifyTurnstile(turnstileToken, ip))) {
+  if (!(await verifyTurnstile(turnstileToken, ip, secrets.TURNSTILE_SECRET_KEY))) {
     return { ok: false, code: "turnstile" };
   }
 
@@ -92,8 +94,8 @@ export async function sendMessage(input: unknown): Promise<SendMessageResult> {
     );
   }
 
-  const to = process.env.CONTACT_TO_EMAIL;
-  const apiKey = process.env.RESEND_API_KEY;
+  const to = secrets.CONTACT_TO_EMAIL;
+  const apiKey = secrets.RESEND_API_KEY;
   if (!to || !apiKey) {
     return { ok: false, code: "delivery" };
   }

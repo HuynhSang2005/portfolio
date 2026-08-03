@@ -3,9 +3,15 @@ const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverif
 /**
  * Xác minh token Turnstile phía server.
  * Fail-closed khi thiếu secret hoặc lỗi mạng.
+ *
+ * @param secret - Optional override (Cloudflare Worker binding); falls back to `process.env`.
  */
-export async function verifyTurnstile(token: string, ip?: string): Promise<boolean> {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
+export async function verifyTurnstile(
+  token: string,
+  ip?: string,
+  secretOverride?: string,
+): Promise<boolean> {
+  const secret = secretOverride ?? process.env.TURNSTILE_SECRET_KEY;
   if (!secret) return false;
 
   try {

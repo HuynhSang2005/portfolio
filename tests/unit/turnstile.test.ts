@@ -29,7 +29,7 @@ describe("verifyTurnstile", () => {
   });
 
   it("fails closed when the secret is missing", async () => {
-    vi.unstubAllEnvs();
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
     await expect(verifyTurnstile("tok")).resolves.toBe(false);
     expect(fetch).not.toHaveBeenCalled();
   });
