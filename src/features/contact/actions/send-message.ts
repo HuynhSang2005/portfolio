@@ -55,25 +55,41 @@ export async function sendMessage(input: unknown): Promise<SendMessageResult> {
   }
 
   // Rate limit qua Workers binding; next dev không có binding — bỏ qua (spec §6.6).
+  const isDev = process.env.NODE_ENV === "development";
+  let limiter: { limit(opts: { key: string }): Promise<{ success: boolean }> } | undefined;
+
   try {
     const { env } = await getCloudflareContext({ async: true });
-    const limiter = (
+    limiter = (
       env as {
         CONTACT_RATE_LIMITER?: { limit(opts: { key: string }): Promise<{ success: boolean }> };
       }
     ).CONTACT_RATE_LIMITER;
-    if (limiter) {
+  } catch {
+    if (isDev) {
+      console.warn(
+        "[contact] CONTACT_RATE_LIMITER binding unavailable in next dev — skipping rate limit",
+      );
+    } else {
+      return { ok: false, code: "rate-limited" };
+    }
+  }
+
+  if (limiter) {
+    try {
       const { success } = await limiter.limit({ key: `contact:${ip}` });
       if (!success) {
         return { ok: false, code: "rate-limited" };
       }
-    } else if (process.env.NODE_ENV === "development") {
-      console.warn(
-        "[contact] CONTACT_RATE_LIMITER binding unavailable in next dev — skipping rate limit",
-      );
+    } catch {
+      return { ok: false, code: "rate-limited" };
     }
-  } catch {
-    // getCloudflareContext throw ngoài Workers (plain next dev) — degradation dev, spec §6.6.
+  } else if (!isDev) {
+    return { ok: false, code: "rate-limited" };
+  } else {
+    console.warn(
+      "[contact] CONTACT_RATE_LIMITER binding unavailable in next dev — skipping rate limit",
+    );
   }
 
   const to = process.env.CONTACT_TO_EMAIL;

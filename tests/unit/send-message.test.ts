@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const limitMock = vi.fn();
+const getCloudflareContextMock = vi.fn();
 
 vi.mock("@opennextjs/cloudflare", () => ({
-  getCloudflareContext: async () => ({ env: { CONTACT_RATE_LIMITER: { limit: limitMock } } }),
+  getCloudflareContext: (...args: unknown[]) => getCloudflareContextMock(...args),
 }));
 
 vi.mock("next/headers", () => ({
@@ -32,10 +33,14 @@ function stubFetch(...responses: Array<{ ok: boolean; body: unknown }>) {
 describe("sendMessage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("NODE_ENV", "test");
     vi.stubEnv("TURNSTILE_SECRET_KEY", "secret");
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("CONTACT_TO_EMAIL", "owner@example.com");
     limitMock.mockResolvedValue({ success: true });
+    getCloudflareContextMock.mockResolvedValue({
+      env: { CONTACT_RATE_LIMITER: { limit: limitMock } },
+    });
   });
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -85,5 +90,22 @@ describe("sendMessage", () => {
     stubFetch({ ok: true, body: { success: true } }, { ok: false, body: { message: "bad key" } });
     const { sendMessage } = await import("@/features/contact/actions/send-message");
     expect(await sendMessage(valid)).toEqual({ ok: false, code: "delivery" });
+  });
+
+  it("fails rate-limited in production when the rate limiter binding is missing", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    stubFetch({ ok: true, body: { success: true } });
+    getCloudflareContextMock.mockResolvedValue({ env: {} });
+    const { sendMessage } = await import("@/features/contact/actions/send-message");
+    expect(await sendMessage(valid)).toEqual({ ok: false, code: "rate-limited" });
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("fails rate-limited when limiter.limit throws", async () => {
+    stubFetch({ ok: true, body: { success: true } });
+    limitMock.mockRejectedValue(new Error("limiter unavailable"));
+    const { sendMessage } = await import("@/features/contact/actions/send-message");
+    expect(await sendMessage(valid)).toEqual({ ok: false, code: "rate-limited" });
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });
