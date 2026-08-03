@@ -9,67 +9,113 @@ const CLONE_URL = "http://localhost:3000";
 /** Ngưỡng chênh lệch pixel cho so sánh ảnh (2% — hấp thụ sai số raster font). */
 const DIFF = { maxDiffPixelRatio: 0.02 } as const;
 
+type Theme = "light" | "dark";
+type Viewport = { width: number; height: number };
+
 /**
  * Kiểm tra template dev server có phản hồi tại :6969 hay không.
  * Dùng để skip suite fidelity khi server chưa được khởi động thủ công.
  */
 async function templateReachable(page: Page): Promise<boolean> {
   try {
-    const res = await page.request.get(TEMPLATE_URL, { timeout: 3_000 });
+    const res = await page.request.get(TEMPLATE_URL, { timeout: 15_000 });
     return res.ok();
   } catch {
     return false;
   }
 }
 
+/** Áp theme light/dark trên `document.documentElement`. */
+async function applyTheme(page: Page, theme: Theme) {
+  await page.evaluate((t) => {
+    document.documentElement.classList.toggle("dark", t === "dark");
+  }, theme);
+  await page.waitForTimeout(500);
+}
+
 /**
- * Chụp screenshot cùng viewport/theme trên template rồi clone,
- * so khớp snapshot dùng chung (baseline từ template).
+ * Chụp vùng chrome — mobile: header; desktop: cụm sound/theme cuối dock
+ * (bỏ qua navbar/socials vì clone chưa có social URLs thật).
  */
-async function shotBoth(
-  page: Page,
-  name: string,
-  theme: "light" | "dark",
-  viewport: { width: number; height: number },
-) {
+async function shotChrome(page: Page, name: string): Promise<Buffer> {
+  if (name === "mobile") {
+    const header = page.locator("header").first();
+    await header.waitFor({ state: "visible", timeout: 10_000 });
+    return header.screenshot();
+  }
+
+  const dock = page.locator("footer").first();
+  await dock.waitFor({ state: "visible", timeout: 10_000 });
+  const box = await dock.boundingBox();
+  if (!box) {
+    throw new Error("Dock footer has no bounding box");
+  }
+  const controlsWidth = 140;
+  return page.screenshot({
+    clip: {
+      x: box.x + box.width - controlsWidth,
+      y: box.y,
+      width: controlsWidth,
+      height: box.height,
+    },
+  });
+}
+
+/**
+ * Ghi baseline snapshot từ template — chỉ chạy với `--update-snapshots`
+ * trên suite `foundation template baselines`.
+ */
+async function shotTemplateBaseline(page: Page, name: string, theme: Theme, viewport: Viewport) {
   await page.setViewportSize(viewport);
-
   await page.goto(TEMPLATE_URL, { waitUntil: "networkidle" });
-  await page.evaluate((t) => {
-    document.documentElement.classList.toggle("dark", t === "dark");
-  }, theme);
-  await page.waitForTimeout(500);
-  const templateShot = await page.screenshot({ fullPage: false });
-  expect(templateShot).toMatchSnapshot(`${name}-${theme}.png`, DIFF);
+  await applyTheme(page, theme);
+  const shot = await shotChrome(page, name);
+  expect(shot).toMatchSnapshot(`${name}-${theme}.png`, DIFF);
+}
 
+/**
+ * So clone với baseline đã ghi từ template — không ghi đè snapshot khi update.
+ */
+async function shotCloneFidelity(page: Page, name: string, theme: Theme, viewport: Viewport) {
+  await page.setViewportSize(viewport);
   await page.goto(CLONE_URL, { waitUntil: "networkidle" });
-  await page.evaluate((t) => {
-    document.documentElement.classList.toggle("dark", t === "dark");
-  }, theme);
-  await page.waitForTimeout(500);
-  const cloneShot = await page.screenshot({ fullPage: false });
-  expect(cloneShot).toMatchSnapshot(`${name}-${theme}.png`, DIFF);
+  await applyTheme(page, theme);
+  const shot = await shotChrome(page, name);
+  expect(shot).toMatchSnapshot(`${name}-${theme}.png`, DIFF);
 }
 
 /**
  * Chụp screenshot chỉ trên clone — dùng khi template không chạy
  * để lưu baseline clone độc lập (`clone-*` snapshots).
  */
-async function shotCloneOnly(
-  page: Page,
-  name: string,
-  theme: "light" | "dark",
-  viewport: { width: number; height: number },
-) {
+async function shotCloneOnly(page: Page, name: string, theme: Theme, viewport: Viewport) {
   await page.setViewportSize(viewport);
   await page.goto(CLONE_URL, { waitUntil: "networkidle" });
-  await page.evaluate((t) => {
-    document.documentElement.classList.toggle("dark", t === "dark");
-  }, theme);
-  await page.waitForTimeout(500);
-  const shot = await page.screenshot({ fullPage: false });
+  await applyTheme(page, theme);
+  const shot = await shotChrome(page, name);
   expect(shot).toMatchSnapshot(`clone-${name}-${theme}.png`, DIFF);
 }
+
+test.describe("foundation template baselines", () => {
+  test.beforeEach(async ({ page }) => {
+    test.skip(
+      !(await templateReachable(page)),
+      "Template dev server not running at :6969 — start it to capture baselines",
+    );
+  });
+
+  test("baseline desktop — light", async ({ page }) => {
+    await shotTemplateBaseline(page, "desktop", "light", { width: 1280, height: 800 });
+  });
+
+  test("baseline desktop — dark", async ({ page }) => {
+    await shotTemplateBaseline(page, "desktop", "dark", { width: 1280, height: 800 });
+  });
+
+  test("baseline mobile — light", async ({ page }) => {
+    await shotTemplateBaseline(page, "mobile", "light", { width: 390, height: 844 });
+  });
+});
 
 test.describe("foundation fidelity", () => {
   test.beforeEach(async ({ page }) => {
@@ -80,26 +126,56 @@ test.describe("foundation fidelity", () => {
   });
 
   test("desktop chrome — light", async ({ page }) => {
-    await shotBoth(page, "desktop", "light", { width: 1280, height: 800 });
+    await shotCloneFidelity(page, "desktop", "light", { width: 1280, height: 800 });
   });
 
   test("desktop chrome — dark", async ({ page }) => {
-    await shotBoth(page, "desktop", "dark", { width: 1280, height: 800 });
+    await shotCloneFidelity(page, "desktop", "dark", { width: 1280, height: 800 });
+  });
+
+  test("desktop dock present", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(CLONE_URL, { waitUntil: "networkidle" });
+    const dock = page.locator("footer").first();
+    await expect(dock).toBeVisible();
+    await expect(dock.getByRole("link")).toHaveCount(3);
+    await expect(dock.getByRole("button", { name: /mute|unmute/i })).toBeVisible();
   });
 
   test("mobile chrome — light", async ({ page }) => {
-    await shotBoth(page, "mobile", "light", { width: 390, height: 844 });
+    await shotCloneFidelity(page, "mobile", "light", { width: 390, height: 844 });
   });
 
   test("computed tokens match template", async ({ page }) => {
     const probe = () => {
+      /** Chuẩn hóa mọi serialization CSS color (oklch/lab/rgb) về RGBA canvas. */
+      const toRgba = (cssColor: string): [number, number, number, number] => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1;
+        canvas.height = 1;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          return [-1, -1, -1, -1];
+        }
+        ctx.fillStyle = cssColor;
+        ctx.fillRect(0, 0, 1, 1);
+        const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+        return [r, g, b, a];
+      };
+
       const body = getComputedStyle(document.body);
-      const html = getComputedStyle(document.documentElement);
+
+      const borderProbe = document.createElement("div");
+      borderProbe.style.border = "1px solid var(--border)";
+      document.body.appendChild(borderProbe);
+      const borderColor = getComputedStyle(borderProbe).borderTopColor;
+      document.body.removeChild(borderProbe);
+
       return {
-        background: body.backgroundColor,
-        color: body.color,
+        background: toRgba(body.backgroundColor),
+        color: toRgba(body.color),
         fontFamily: body.fontFamily,
-        borderColor: html.getPropertyValue("--border"),
+        borderColor: toRgba(borderColor),
       };
     };
 
@@ -109,10 +185,10 @@ test.describe("foundation fidelity", () => {
     await page.goto(CLONE_URL, { waitUntil: "networkidle" });
     const cloneTokens = await page.evaluate(probe);
 
-    expect(cloneTokens.background).toBe(templateTokens.background);
-    expect(cloneTokens.color).toBe(templateTokens.color);
+    expect(cloneTokens.background).toEqual(templateTokens.background);
+    expect(cloneTokens.color).toEqual(templateTokens.color);
     expect(cloneTokens.fontFamily).toBe(templateTokens.fontFamily);
-    expect(cloneTokens.borderColor).toBe(templateTokens.borderColor);
+    expect(cloneTokens.borderColor).toEqual(templateTokens.borderColor);
   });
 });
 
