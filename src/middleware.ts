@@ -2,7 +2,14 @@ import { type NextRequest } from "next/server";
 
 import { updateSession } from "@/lib/supabase/proxy";
 
-export async function proxy(request: NextRequest) {
+/**
+ * Edge middleware for Supabase session refresh.
+ *
+ * Next.js 16 prefers `proxy.ts` (Node), but `@opennextjs/cloudflare@1.20.2`
+ * still hard-fails Node middleware builds. Keep the deprecated `middleware.ts`
+ * Edge convention until OpenNext ships proxy.ts support on npm.
+ */
+export async function middleware(request: NextRequest) {
   return updateSession(request);
 }
 
