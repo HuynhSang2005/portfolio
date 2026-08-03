@@ -16,7 +16,7 @@ vi.mock("@/lib/hooks/use-scroll-direction", () => ({
 }));
 
 vi.mock("@/components/mdx/mdx", () => ({
-  MDX: ({ code }: { code: string }) => <article data-testid="mdx-body">{code}</article>,
+  MDX: ({ html }: { html: string }) => <article data-testid="mdx-body">{html}</article>,
 }));
 
 import BlogPage, { generateMetadata as indexMetadata } from "@/app/blog/page";

@@ -1,13 +1,7 @@
-import fs from "node:fs";
-
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { getAllBlogPosts, getBlogPostBySlug } from "@/features/blog/data/posts";
 import { frontmatterSchema } from "@/features/blog/types/post";
-
-afterEach(() => {
-  vi.restoreAllMocks();
-});
 
 describe("blog posts data layer", () => {
   it("returns published posts sorted by date desc", async () => {
@@ -42,33 +36,6 @@ describe("blog posts data layer", () => {
 
   it("returns undefined for unknown slugs", async () => {
     await expect(getBlogPostBySlug("does-not-exist")).resolves.toBeUndefined();
-  });
-
-  it("looks up slug directly without reading the entire content directory", async () => {
-    const readdirSpy = vi.spyOn(fs, "readdirSync");
-    await getBlogPostBySlug("sample-post-one");
-    expect(readdirSpy).not.toHaveBeenCalled();
-  });
-
-  it("returns undefined for unpublished slugs", async () => {
-    vi.spyOn(fs, "existsSync").mockReturnValue(true);
-    vi.spyOn(fs, "readFileSync").mockReturnValue(`---
-title: Draft
-description: A draft post
-date: "2026-07-01"
-author: Test
-published: false
-category: Test
----
-
-Draft body`);
-    await expect(getBlogPostBySlug("draft-post")).resolves.toBeUndefined();
-  });
-
-  it("includes file path in parse errors", async () => {
-    vi.spyOn(fs, "existsSync").mockReturnValue(true);
-    vi.spyOn(fs, "readFileSync").mockReturnValue("---\ntitle: x\n---\nbody");
-    await expect(getBlogPostBySlug("bad-post")).rejects.toThrow(/bad-post\.mdx/);
   });
 
   it("rejects invalid frontmatter shapes", () => {

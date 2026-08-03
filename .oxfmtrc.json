@@ -20,6 +20,7 @@
     "portfolio-template-ui-ux/**",
     "*.tsbuildinfo",
     "supabase/.temp/**",
-    "supabase/.branches/**"
+    "supabase/.branches/**",
+    "**/*.generated.ts"
   ]
 }

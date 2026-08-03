@@ -19,9 +19,10 @@ export const frontmatterSchema = z.object({
 /** Metadata blog sau validate; `readTime` luôn có sau bước fallback trong data layer. */
 export type BlogMetadata = z.infer<typeof frontmatterSchema> & { readTime: string };
 
-/** Post blog đã parse: metadata, slug và nội dung MDX (không frontmatter). */
+/** Post blog đã parse: metadata, slug, raw body, và HTML đã precompile. */
 export type BlogPost = {
   metadata: BlogMetadata;
   slug: string;
   content: string;
+  html: string;
 };
