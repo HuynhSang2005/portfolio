@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FloatingHeader } from "@/components/layout/floating-header";
 import { ScrollArea } from "@/components/layout/scroll-area";
 import { getAllBlogPosts } from "@/features/blog/data/posts";
+import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
 const BLOG_DESCRIPTION =
   "Thoughts on software engineering, UI architecture, and building things that work.";
@@ -29,7 +30,7 @@ export default async function BlogPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <ScrollArea useScrollAreaId>
         <FloatingHeader scrollTitle="Blog" />

@@ -10,8 +10,9 @@ import { Prose } from "@/components/ui/typography";
 import { siteConfig } from "@/config/site";
 import { PostMetrics } from "@/features/blog/components/post-metrics";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/features/blog/data/posts";
+import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 /** Sinh static params cho mọi post đã publish — dùng bởi Next.js SSG. */
 export const generateStaticParams = async () => {
@@ -68,7 +69,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <ScrollArea useScrollAreaId>
         <FloatingHeader scrollTitle={title} />
@@ -98,7 +99,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </div>
             <Prose className="pb-12">
               <p className="lead mt-6 mb-6">{description}</p>
-              <MDX code={post.content} />
+              <MDX html={post.html} />
             </Prose>
           </div>
         </div>

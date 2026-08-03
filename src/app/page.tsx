@@ -14,6 +14,7 @@ import { Projects } from "@/features/home/components/projects";
 import { SkillsVenn } from "@/features/home/components/skills-venn";
 import { Testimonials } from "@/features/home/components/testimonials";
 import { WordmarkFooter } from "@/features/home/components/wordmark-footer";
+import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
 /** Metadata trang chủ — tagline làm title, description từ site config. */
 export async function generateMetadata(): Promise<Metadata> {
@@ -35,7 +36,7 @@ export default async function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Info show={["time", "screen"]} />
       <ScrollArea useScrollAreaId className="">
