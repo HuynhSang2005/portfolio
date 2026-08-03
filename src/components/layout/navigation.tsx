@@ -1,6 +1,12 @@
+import BottomDock from "./dock";
+
 /**
- * Shell navigation — Tasks 7-8 gắn BottomDock (desktop) và ScrollTop tại đây.
+ * Shell navigation — BottomDock desktop (Task 7); ScrollTop gắn ở Task 8.
  */
 export default function Navigation() {
-  return null;
+  return (
+    <>
+      <BottomDock className="hidden lg:block" />
+    </>
+  );
 }
