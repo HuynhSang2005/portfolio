@@ -151,7 +151,7 @@ the same roles onto the dark ramp (documented per-token and in the sidecar).
 
 - **Link Blue** (blue-700 light / blue-500 dark): inline links in prose only.
 - **Signal Green** (green-500): success states only. The GitHub contribution heatmap is deliberately
-  *not* green here — it is monochrome (muted-foreground at 5/20/40/60/80% opacity).
+  _not_ green here — it is monochrome (muted-foreground at 5/20/40/60/80% opacity).
 - **Destructive Red** (red-600 light / red-700 dark): destructive actions and errors.
 - **Info Blue**: informational notices.
 
@@ -186,7 +186,7 @@ the page, one for the readouts.
 
 ### Named Rules
 
-**The Two Voices Rule.** X speaks to humans, JetBrains Mono is the readout voice *inside* content
+**The Two Voices Rule.** X speaks to humans, JetBrains Mono is the readout voice _inside_ content
 (dates, read-times, job titles, code). The fixed screen-corner overlays are the deliberate exception:
 they are set in X at extra-small with wide tracking. Never set prose in mono (dossier-style
 `ProseMono` bodies excepted).
@@ -239,9 +239,10 @@ the pill dock, the half-cropped footer wordmark, and the L-shaped corner marks f
 ## Components
 
 ### Buttons
+
 - **Shape:** always a pill (9999px radius).
 - **Primary:** zinc gradient fill (zinc-700 → zinc-800 light; zinc-600 → zinc-700 dark), white text
-  with a subtle text shadow, compact padding (8px 16px). Hover *lightens* the gradient end
+  with a subtle text shadow, compact padding (8px 16px). Hover _lightens_ the gradient end
   (→ zinc-700 light; → zinc-600 dark); a dark-mode-only inset shine gives it a machined feel.
 - **Secondary/Ghost:** Graphite Whisper fill or bare text; ScrollTop is a circular secondary pill
   that appears past a 400px scroll threshold, with opacity keyed to scroll direction.
@@ -249,10 +250,12 @@ the pill dock, the half-cropped footer wordmark, and the L-shaped corner marks f
   (0.1s tween) belongs to dock icons only. Optional click sound via the sound system.
 
 ### Chips
+
 - **Style:** transparent fill, 1px Hairline border, pill shape, 0.75rem label type (2px 8px padding).
 - **Use:** categories, tags, read-times. Never filled with chroma.
 
 ### Cards / Containers
+
 - **Corner Style:** gently rounded (0.75rem).
 - **Background:** Paper White light / Slate Card dark.
 - **Border:** 1px Hairline; dashed variants for placeholder/empty states.
@@ -261,6 +264,7 @@ the pill dock, the half-cropped footer wordmark, and the L-shaped corner marks f
 - **Internal Padding:** 1rem baseline, scaling with section rhythm.
 
 ### Navigation (the signature)
+
 - **Bottom dock:** frosted pill, fixed bottom-center, icons magnify 40→80→40 by cursor distance
   (spring: mass 0.1, stiffness 150, damping 12), tooltips above icons, active-route dots, sound
   feedback, idle auto-hide (intended — the template's timer never arms, so this is dead code the
@@ -270,16 +274,19 @@ the pill dock, the half-cropped footer wordmark, and the L-shaped corner marks f
   View Transitions clip-path wipe (0.8s custom `linear()` easing).
 
 ### TOC (article pages)
+
 - Left-rail list of section links, active item highlighted with the accent treatment; plain,
   hairline-free, mono-adjacent typography. "All posts" back link above.
 
 ### Wordmark Footer (signature)
+
 - Oversized brand wordmark rendered as SVG text (240px, weight 700), clipped by its own viewBox so
   roughly 70% of each glyph shows, with a soft bottom fade mask. Mouse-tracked radial shine
   (rAF-lerped gradient center), spring entrance on scroll-into-view (stiffness 260, damping 28).
   Set in the system UI stack, not X.
 
 ### Inputs / Fields
+
 - **Style:** 1px Hairline stroke, transparent or Paper fill, card-radius.
 - **Focus:** Fog Gray ring; no glow, no chroma shift.
 

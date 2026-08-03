@@ -142,7 +142,11 @@ After editing: `bun run format` → `bun run typecheck` → `bun run lint` → r
 - Prefer Conventional Commits; do not leave Cursor/agent identity (`cursoragent`) as the git commit author in history.
 - Stick to Next.js stable releases only; do not use canary or preview channels unless explicitly asked.
 - Configure OpenNext/Wrangler and preview/deploy scripts without running `wrangler login` or production deploy unless explicitly asked.
+- Vet dependencies before proposing them: verify maintenance with authoritative data (npm registry publish dates, download counts, GitHub activity); prefer actively-maintained modern packages or small owned/local utilities over stale deps (user rejected `next-themes`, `react-fast-marquee`, `reading-time`, `github-slugger`, `gray-matter`). If data shows a package the user called stale is actually maintained, keep it and present the evidence (e.g. `remark-gfm`).
+- Gate execution on explicit user approval: the user reviews and approves specs, then plans (sometimes in batches), before implementation starts; do not execute until the user says so.
 
 ## Learned Workspace Facts
 
 - Supabase project for this portfolio lives under the HuynhSang workspace/organization (project name `portfolio`); never store or commit database passwords or other secrets in docs.
+- pnpm is not installed on this machine; run pnpm-based third-party projects (e.g. the reference template) with Bun instead.
+- Ratified build strategy (in `PRODUCT.md`): replicate the `portfolio-template-ui-ux/portfolio-main` UI/UX/design/animation 100% (MIT license, author Sri Somanaath G — remove all author personal info before publishing) re-platformed to this repo's stack; user-approved phase specs/plans live under `docs/superpowers/specs/` and `docs/superpowers/plans/`.
