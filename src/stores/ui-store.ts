@@ -1,5 +1,7 @@
 import { createStore } from "zustand/vanilla";
 
+import { SOUND_MUTED_STORAGE_KEY } from "@/lib/sound";
+
 /** Trạng thái UI toàn cục — sidebar và âm thanh. */
 export type UiState = {
   sidebarOpen: boolean;
@@ -33,6 +35,13 @@ export const createUiStore = (initState: UiState = defaultUiState) => {
     ...initState,
     setSidebarOpen: (open) => set({ sidebarOpen: open }),
     toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-    toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+    toggleSound: () =>
+      set((state) => {
+        const soundEnabled = !state.soundEnabled;
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(SOUND_MUTED_STORAGE_KEY, String(!soundEnabled));
+        }
+        return { soundEnabled };
+      }),
   }));
 };
