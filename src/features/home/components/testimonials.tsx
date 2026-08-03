@@ -62,7 +62,10 @@ function TestimonialMarquee({
       <div
         className="flex w-max gap-2 group-hover:[animation-play-state:paused]"
         style={{
-          animation: `marquee-scroll ${items.length * 5}s linear infinite`,
+          animationName: "marquee-scroll",
+          animationDuration: `${items.length * 5}s`,
+          animationTimingFunction: "linear",
+          animationIterationCount: "infinite",
           animationDirection: reverse ? "reverse" : "normal",
         }}
       >

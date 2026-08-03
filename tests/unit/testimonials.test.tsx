@@ -22,7 +22,7 @@ describe("Testimonials marquee", () => {
       container.querySelectorAll<HTMLElement>("[style*='marquee-scroll']"),
     );
     expect(animated).toHaveLength(2);
-    expect(animated[0]?.style.animation).toContain(`${TESTIMONIALS_ROW_1.length * 5}s`);
+    expect(animated[0]?.style.animationDuration).toBe(`${TESTIMONIALS_ROW_1.length * 5}s`);
     expect(animated[0]?.style.animationDirection).not.toBe("reverse");
     expect(animated[1]?.style.animationDirection).toBe("reverse");
   });
