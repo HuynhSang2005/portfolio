@@ -2,21 +2,30 @@
 
 import { Volume2Icon, VolumeOffIcon } from "lucide-react";
 
+import { playToggleJingle } from "@/lib/sound";
 import { useUiStore } from "@/providers/ui-store-provider";
 
 /**
- * Nút bật/tắt âm thanh trên dock — chỉ đổi `soundEnabled` trong UI store.
+ * Nút bật/tắt âm thanh trên dock — đổi `soundEnabled` và phát jingle khi bật lại.
  *
- * Phát âm thanh thật (Web Audio) được nối ở P2; P1 chỉ là stub trực quan.
+ * Template: tắt âm im lặng; bật lại phát chuỗi C5→E5→G5→C6 tăng dần.
  */
 export function SoundToggle() {
   const soundEnabled = useUiStore((s) => s.soundEnabled);
   const toggleSound = useUiStore((s) => s.toggleSound);
 
+  const handleClick = () => {
+    const unmuting = !soundEnabled;
+    toggleSound();
+    if (unmuting) {
+      playToggleJingle(true);
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={toggleSound}
+      onClick={handleClick}
       className="flex h-full w-full items-center justify-center"
       aria-label={soundEnabled ? "Mute sounds" : "Unmute sounds"}
     >

@@ -6,6 +6,7 @@ import { useCallback } from "react";
 
 import { META_THEME_COLORS } from "@/config/site";
 import { useMetaColor } from "@/lib/hooks/use-meta-color";
+import { useSound } from "@/lib/hooks/use-sound";
 
 /**
  * Trả về theme kế tiếp khi người dùng bấm toggle (dark ↔ light).
@@ -79,6 +80,7 @@ const moonPath =
 
 /** Nút dock chuyển light/dark với morph sun/moon và View Transition an toàn. */
 export default function ModeToggle() {
+  const playClick = useSound("/assets/button-click.mp3");
   const { resolvedTheme, setTheme } = useTheme();
   const theme = resolvedTheme === "dark" ? "dark" : "light";
   const { setMetaColor } = useMetaColor();
@@ -92,7 +94,10 @@ export default function ModeToggle() {
   return (
     <div
       className="flex h-full w-full items-center justify-center"
-      onClick={() => applyThemeTransition(switchTheme)}
+      onClick={() => {
+        playClick();
+        applyThemeTransition(switchTheme);
+      }}
     >
       <m.svg
         strokeWidth="4"

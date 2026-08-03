@@ -13,6 +13,7 @@ import {
 } from "motion/react";
 import React, { useRef, useState } from "react";
 
+import { useHoverSound } from "@/lib/hooks/use-hover-sound";
 import { cn } from "@/lib/utils";
 
 /** Props cho container dock floating (magnification theo chuột). */
@@ -87,6 +88,7 @@ const DockIcon = ({ mouseX, title, className, children, ...props }: DockIconProp
   const height = useSpring(heightTransform, { mass: 0.1, stiffness: 150, damping: 12 });
 
   const [hovered, setHovered] = useState(false);
+  const playHoverSound = useHoverSound();
 
   const handleMouseDown = async () => {
     await controls.start({ y: 10, transition: { duration: 0.1 } });
@@ -105,7 +107,7 @@ const DockIcon = ({ mouseX, title, className, children, ...props }: DockIconProp
       style={{ width, height }}
       onMouseEnter={() => {
         setHovered(true);
-        // P2: call hover-sound hook here when the sound system lands
+        playHoverSound();
       }}
       onMouseLeave={() => {
         setHovered(false);
