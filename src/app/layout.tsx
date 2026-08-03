@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@wrksz/themes/next";
 import type { Metadata, Viewport } from "next";
 import type React from "react";
 
@@ -43,16 +44,24 @@ export default function RootLayout({
         <script type="text/javascript" dangerouslySetInnerHTML={{ __html: platformScript }} />
       </head>
       <body suppressHydrationWarning>
-        <Providers>
-          <Navigation />
-          <main
-            id="main-content"
-            vaul-drawer-wrapper=""
-            className="relative min-h-screen w-full bg-background"
-          >
-            {children}
-          </main>
-        </Providers>
+        {/* ThemeProvider từ @wrksz/themes/next là async RSC — không đặt trong "use client". */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Navigation />
+            <main
+              id="main-content"
+              vaul-drawer-wrapper=""
+              className="relative min-h-screen w-full bg-background"
+            >
+              {children}
+            </main>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
