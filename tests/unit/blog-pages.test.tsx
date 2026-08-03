@@ -1,5 +1,7 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactElement } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/blog",
@@ -21,14 +23,35 @@ import BlogPage, { generateMetadata as indexMetadata } from "@/app/blog/page";
 import BlogPostPage, { generateStaticParams } from "@/app/blog/[slug]/page";
 import { getAllBlogPosts } from "@/features/blog/data/posts";
 
+function renderWithProviders(ui: ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+}
+
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((url: string) => {
+      if (url.includes("/views")) {
+        return Promise.resolve(Response.json(0));
+      }
+      if (url.includes("/likes")) {
+        return Promise.resolve(Response.json({ likes: 0, currentUserLikes: 0 }));
+      }
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    }),
+  );
+});
+
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
 });
 
 describe("blog index", () => {
   it("renders a row per published post with metadata cluster", async () => {
     const posts = await getAllBlogPosts();
-    render(await BlogPage());
+    renderWithProviders(await BlogPage());
     for (const post of posts) {
       expect(screen.getByRole("link", { name: new RegExp(post.metadata.title) })).toBeTruthy();
       expect(screen.getAllByText(post.metadata.category).length).toBeGreaterThan(0);
@@ -52,7 +75,7 @@ describe("blog article", () => {
     const posts = await getAllBlogPosts();
     const slug = posts[0]!.slug;
     const params = Promise.resolve({ slug });
-    render(await BlogPostPage({ params }));
+    renderWithProviders(await BlogPostPage({ params }));
     expect(screen.getByRole("heading", { level: 1, name: posts[0]!.metadata.title })).toBeTruthy();
     expect(screen.getByText(posts[0]!.metadata.readTime)).toBeTruthy();
   }, 20_000);
