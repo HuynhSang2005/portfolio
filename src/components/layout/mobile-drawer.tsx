@@ -37,11 +37,13 @@ export function MobileDrawer() {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger>
-        <Button variant="ghost" size="icon" title="Toggle drawer">
-          <CommandIcon size={16} />
-        </Button>
-      </DrawerTrigger>
+      <DrawerTrigger
+        render={
+          <Button variant="ghost" size="icon" title="Toggle drawer">
+            <CommandIcon size={16} />
+          </Button>
+        }
+      />
       <DrawerContent className="h-4/5">
         <DrawerTitle className="sr-only">Navigation Menu</DrawerTitle>
         <DrawerDescription className="sr-only">

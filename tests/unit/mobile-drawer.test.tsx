@@ -32,9 +32,17 @@ describe("MobileDrawer", () => {
 
   it("shows placeholder trigger before client mount", () => {
     useMounted.mockReturnValue(false);
-    render(<MobileDrawer />);
+    const { container } = render(<MobileDrawer />);
     expect(screen.getByTitle("Toggle drawer")).toBeInTheDocument();
     expect(screen.queryByText("Home")).not.toBeInTheDocument();
+    expect(container.querySelectorAll("button")).toHaveLength(1);
+  });
+
+  it("renders exactly one button in closed drawer trigger subtree", () => {
+    const { container } = render(<MobileDrawer />);
+    expect(screen.queryByText("Home")).not.toBeInTheDocument();
+    expect(container.querySelectorAll("button")).toHaveLength(1);
+    expect(screen.getByTitle("Toggle drawer").tagName).toBe("BUTTON");
   });
 
   it("omits social section when siteConfig.socials is empty", () => {
