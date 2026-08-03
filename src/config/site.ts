@@ -60,6 +60,8 @@ export type SocialIconKey = (typeof socialIconKeys)[number];
 export const siteConfig: SiteConfig = siteConfigSchema.parse({
   name: "Huỳnh Sang",
   tagline: "IT Student",
+  // Owner contact email — update before publishing.
+  email: "hello@example.com",
   navbar: [
     { href: "/", icon: "home", label: "Home" },
     { href: "/craft", icon: "craft", label: "Craft", isNew: true },
