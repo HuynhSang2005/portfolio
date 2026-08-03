@@ -5,16 +5,25 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactForm } from "@/features/contact/components/contact-form";
 
 const sendMessageMock = vi.fn();
+const turnstileMock = vi.hoisted(() => ({ autoToken: "test-token" as string | null }));
+
 vi.mock("@/features/contact/actions/send-message", () => ({
   sendMessage: (input: unknown) => sendMessageMock(input),
 }));
 
-vi.mock("@/features/contact/components/turnstile-widget", () => ({
-  TurnstileWidget: ({ onToken }: { onToken: (t: string) => void }) => {
-    onToken("test-token");
-    return <div data-testid="turnstile-stub" />;
-  },
-}));
+vi.mock("@/features/contact/components/turnstile-widget", async () => {
+  const { useEffect } = await import("react");
+  return {
+    TurnstileWidget: ({ onToken }: { onToken: (t: string) => void }) => {
+      useEffect(() => {
+        if (turnstileMock.autoToken !== null) {
+          onToken(turnstileMock.autoToken);
+        }
+      }, [onToken]);
+      return <div data-testid="turnstile-stub" />;
+    },
+  };
+});
 
 vi.mock("@/lib/hooks/use-item-hover-sound", () => ({
   useItemHoverSound: () => () => {},
@@ -33,8 +42,21 @@ async function fillForm(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("ContactForm", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    turnstileMock.autoToken = "test-token";
+  });
   afterEach(() => cleanup());
+
+  it("shows a Turnstile error when visible fields pass but verification is missing", async () => {
+    turnstileMock.autoToken = null;
+    const user = userEvent.setup();
+    render(<ContactForm />);
+    await fillForm(user);
+    await user.click(screen.getByRole("button", { name: /send/i }));
+    expect(await screen.findByText("Verification required")).toBeTruthy();
+    expect(sendMessageMock).not.toHaveBeenCalled();
+  });
 
   it("shows client-side validation errors and does not call the action", async () => {
     const user = userEvent.setup();

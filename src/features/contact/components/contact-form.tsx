@@ -52,6 +52,9 @@ export function ContactForm() {
     (token: string) => {
       tokenRef.current = token;
       form.setValue("turnstileToken", token, { shouldValidate: false });
+      if (token && form.formState.errors.turnstileToken) {
+        form.clearErrors("turnstileToken");
+      }
     },
     [form],
   );
@@ -121,7 +124,10 @@ export function ContactForm() {
             {...form.register("company")}
           />
         </div>
-        <TurnstileWidget onToken={handleTurnstileToken} />
+        <Field>
+          <TurnstileWidget onToken={handleTurnstileToken} />
+          <FieldError errors={[form.formState.errors.turnstileToken]} />
+        </Field>
         <div className="flex flex-col gap-2">
           <Button
             type="submit"
