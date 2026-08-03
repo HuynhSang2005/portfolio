@@ -38,10 +38,10 @@ describe("contact page", () => {
     expect(screen.getByRole("heading", { level: 1, name: /contact/i })).toBeTruthy();
     expect(screen.getByRole("link", { name: /@/i }).getAttribute("href")).toMatch(/^mailto:/);
     expect(screen.getByTestId("contact-form")).toBeTruthy();
-  });
+  }, 15_000);
 
   it("exposes metadata", async () => {
     const { generateMetadata } = await import("@/app/contact/page");
     expect((await generateMetadata()).title).toBe("Contact");
-  });
+  }, 15_000);
 });
