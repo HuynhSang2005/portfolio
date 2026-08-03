@@ -89,10 +89,11 @@ describe("BottomDock content", () => {
     const { container } = renderDock();
     const footer = container.querySelector("footer")!;
     const links = within(footer).getAllByRole("link");
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(4);
     expect(links[0]).toHaveAttribute("href", "/");
     expect(links[1]).toHaveAttribute("href", "/craft");
     expect(links[2]).toHaveAttribute("href", "/blog");
+    expect(links[3]).toHaveAttribute("href", "/contact");
   });
 
   it("renders SoundToggle and ModeToggle in dock", () => {

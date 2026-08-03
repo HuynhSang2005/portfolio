@@ -1,1 +1,9 @@
 NEXTJS_ENV=development
+
+# Contact (P4) — Cloudflare Turnstile ALWAYS-PASS test keys for local dev.
+# Real keys come from the Turnstile dashboard; production values via `wrangler secret`.
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Resend — dev sends via onboarding@resend.dev to your verified inbox.
+RESEND_API_KEY=re_xxxxxxxxxxxx
+CONTACT_TO_EMAIL=you@example.com

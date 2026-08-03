@@ -9,7 +9,7 @@ export const MOBILE_SCROLL_THRESHOLD = 20;
 /** Màu theme-color meta cho light/dark mode. */
 export const META_THEME_COLORS = { light: "#ffffff", dark: "#09090b" } as const;
 
-const navIconKeys = ["home", "craft", "bookmark", "calendar"] as const;
+const navIconKeys = ["home", "craft", "bookmark", "calendar", "contact"] as const;
 const socialIconKeys = ["github", "linkedin", "x", "email"] as const;
 
 const navItemSchema = z.object({
@@ -64,6 +64,7 @@ export const siteConfig: SiteConfig = siteConfigSchema.parse({
     { href: "/", icon: "home", label: "Home" },
     { href: "/craft", icon: "craft", label: "Craft", isNew: true },
     { href: "/blog", icon: "bookmark", label: "Blog" },
+    { href: "/contact", icon: "contact", label: "Contact" },
   ],
   // Owner socials intentionally empty until real URLs exist — dock/drawer
   // render the social section only when this array is non-empty.
