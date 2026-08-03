@@ -1,0 +1,36 @@
+---
+title: "Sample Post: Shipping a Design System Incrementally"
+description: "Placeholder post exercising the blog pipeline — headings, code blocks with titles, and inline code."
+date: "2026-07-20"
+author: "Huỳnh Sang"
+published: true
+category: "Placeholder"
+readTime: "4 min read"
+---
+
+{/* PLACEHOLDER — replace with a real post before publishing. */}
+
+Design systems fail when they are treated as big-bang rewrites. This placeholder walks through the incremental approach with a few code samples.
+
+## Start With Tokens
+
+Tokens are the smallest contract between design and code:
+
+```css title="globals.css"
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.21 0.01 260);
+}
+```
+
+Use `var(--background)` instead of raw palette values everywhere.
+
+## Then Primitives
+
+1. Port one primitive at a time.
+2. Keep the API surface identical.
+3. Verify with visual diffs.
+
+### Inline code matters too
+
+Helpers like `cn()` keep class composition readable.

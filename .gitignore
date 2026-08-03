@@ -61,6 +61,7 @@ supabase/.temp
 .agents/
 .cursor/
 .impeccable/
+.superpowers/
 skills-lock.json
 
 # reference templates (not part of this repo)

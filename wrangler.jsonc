@@ -21,4 +21,12 @@
     // see https://opennext.js.org/cloudflare/howtos/image
     "binding": "IMAGES",
   },
+  "ratelimits": [
+    {
+      // Contact form rate limit (P4) — period is restricted to 10|60s by Cloudflare
+      "name": "CONTACT_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 3, "period": 60 },
+    },
+  ],
 }

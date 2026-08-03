@@ -6,6 +6,10 @@ import { useState, type ReactNode } from "react";
 
 import { UiStoreProvider } from "@/providers/ui-store-provider";
 
+/**
+ * Client providers tree — Query / nuqs / ui-store.
+ * Theme sống ở RSC `ThemeProvider` trong `layout.tsx` (`@wrksz/themes/next` là async).
+ */
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>

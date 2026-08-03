@@ -15,10 +15,12 @@
     ".cursor/**",
     ".agents/**",
     ".impeccable/**",
+    ".superpowers/**",
     ".playwright/**",
     "portfolio-template-ui-ux/**",
     "*.tsbuildinfo",
     "supabase/.temp/**",
-    "supabase/.branches/**"
+    "supabase/.branches/**",
+    "**/*.generated.ts"
   ]
 }
