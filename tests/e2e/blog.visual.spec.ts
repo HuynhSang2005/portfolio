@@ -5,7 +5,7 @@ import { expect, test, type Page } from "@playwright/test";
  *
  * Fixture-driven deltas vs template :6969 (manual side-by-side):
  * - Post titles/descriptions are placeholder copy, not template articles.
- * - Metrics row (views/likes) may show live Supabase counts — structure only in visuals.
+ * - Metrics row (views/likes) is masked in article snapshots — live Supabase counts drift baselines.
  */
 
 /** URL dev server clone (repo này). */
@@ -47,8 +47,12 @@ for (const theme of ["light", "dark"] as const) {
 
     test("article page with code block", async ({ page }) => {
       await gotoBlog(page, "/blog/sample-post-one", theme);
+      const metricsRow = page.locator(
+        ".mb-8 .mt-2.flex.items-center.gap-3 > span.flex.items-center.gap-3",
+      );
       await expect(page).toHaveScreenshot(`blog-article-${theme}.png`, {
         fullPage: true,
+        mask: [metricsRow],
         ...FULL_PAGE_DIFF,
       });
     });

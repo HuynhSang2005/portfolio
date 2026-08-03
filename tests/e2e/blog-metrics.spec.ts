@@ -48,7 +48,15 @@ test.describe("blog metrics", () => {
     for (let i = 0; i < 4; i++) {
       await button.click();
     }
-    await page.waitForTimeout(1500);
+    await expect
+      .poll(
+        async () => {
+          const res = await page.request.get(`${CLONE_URL}/api/posts/sample-post-two/likes`);
+          return (await res.json()).currentUserLikes as number;
+        },
+        { timeout: 10_000 },
+      )
+      .toBe(3);
     await expect(page.getByRole("button", { name: "Liked" })).toBeVisible();
   });
 });
