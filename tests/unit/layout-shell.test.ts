@@ -31,4 +31,13 @@ describe("root layout shell", () => {
     expect(layout).toContain("<Navigation");
     expect(layout).toContain("<Providers");
   });
+
+  it("hosts async ThemeProvider from @wrksz/themes/next in RSC layout", () => {
+    expect(layout).toMatch(/import\s*\{\s*ThemeProvider\s*\}\s*from\s*"@wrksz\/themes\/next"/);
+    expect(layout).toMatch(/<ThemeProvider[\s>]/);
+    const providers = readFileSync(join(process.cwd(), "src/app/providers.tsx"), "utf8");
+    expect(providers).toContain('"use client"');
+    expect(providers).not.toMatch(/from\s*"@wrksz\/themes\/next"/);
+    expect(providers).not.toMatch(/<ThemeProvider[\s>]/);
+  });
 });
