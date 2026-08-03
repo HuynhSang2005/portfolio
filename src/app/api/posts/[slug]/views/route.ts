@@ -1,3 +1,4 @@
+import { assertPublishedSlug } from "@/features/blog/lib/assert-published-slug";
 import { createClient } from "@/lib/supabase/server";
 
 type RouteContext = { params: Promise<{ slug: string }> };
@@ -5,6 +6,10 @@ type RouteContext = { params: Promise<{ slug: string }> };
 /** GET — trả về số lượt xem hiện tại của bài viết (0 nếu chưa có bản ghi). */
 export async function GET(_request: Request, { params }: RouteContext) {
   const { slug } = await params;
+  if (!(await assertPublishedSlug(slug))) {
+    return Response.json({ error: "not found" }, { status: 404 });
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("post_views")
@@ -21,6 +26,10 @@ export async function GET(_request: Request, { params }: RouteContext) {
 /** POST — tăng lượt xem qua RPC `increment_post_view` và trả về số mới. */
 export async function POST(_request: Request, { params }: RouteContext) {
   const { slug } = await params;
+  if (!(await assertPublishedSlug(slug))) {
+    return Response.json({ error: "not found" }, { status: 404 });
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("increment_post_view", { p_slug: slug });
 

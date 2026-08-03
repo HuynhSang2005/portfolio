@@ -33,6 +33,8 @@ const ERROR_MESSAGES: Record<string, string> = {
 export function ContactForm() {
   const [status, setStatus] = useState<Status>(null);
   const [isPending, startTransition] = useTransition();
+  /** Tăng key để remount Turnstile — token chỉ dùng một lần. */
+  const [turnstileKey, setTurnstileKey] = useState(0);
   const tokenRef = useRef("");
   const playHoverSound = useItemHoverSound();
 
@@ -47,6 +49,12 @@ export function ContactForm() {
       turnstileToken: "",
     },
   });
+
+  const refreshTurnstile = useCallback(() => {
+    tokenRef.current = "";
+    form.setValue("turnstileToken", "", { shouldValidate: false });
+    setTurnstileKey((k) => k + 1);
+  }, [form]);
 
   const handleTurnstileToken = useCallback(
     (token: string) => {
@@ -66,7 +74,7 @@ export function ContactForm() {
         const result = await sendMessage({ ...values, turnstileToken: tokenRef.current });
         if (result.ok) {
           form.reset();
-          tokenRef.current = "";
+          refreshTurnstile();
           setStatus({ kind: "success", message: "Message sent — thanks for reaching out." });
           return;
         }
@@ -74,6 +82,9 @@ export function ContactForm() {
           for (const [field, message] of Object.entries(result.fieldErrors)) {
             form.setError(field as keyof ContactFormValues, { message });
           }
+        }
+        if (result.code === "turnstile" || result.code === "rate-limited") {
+          refreshTurnstile();
         }
         setStatus({
           kind: "error",
@@ -125,7 +136,7 @@ export function ContactForm() {
           />
         </div>
         <Field>
-          <TurnstileWidget onToken={handleTurnstileToken} />
+          <TurnstileWidget key={turnstileKey} onToken={handleTurnstileToken} />
           <FieldError errors={[form.formState.errors.turnstileToken]} />
         </Field>
         <div className="flex flex-col gap-2">

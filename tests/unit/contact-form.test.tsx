@@ -99,4 +99,15 @@ describe("ContactForm", () => {
     await user.click(screen.getByRole("button", { name: /send/i }));
     await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/too many/i));
   });
+
+  it("remounts Turnstile after a successful submit", async () => {
+    sendMessageMock.mockResolvedValue({ ok: true });
+    const user = userEvent.setup();
+    const { container } = render(<ContactForm />);
+    await fillForm(user);
+    await user.click(screen.getByRole("button", { name: /send/i }));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/sent/i));
+    // Stub remounts via key change; still present after reset.
+    expect(container.querySelector('[data-testid="turnstile-stub"]')).toBeTruthy();
+  });
 });

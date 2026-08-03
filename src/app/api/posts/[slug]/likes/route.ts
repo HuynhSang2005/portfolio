@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { assertPublishedSlug } from "@/features/blog/lib/assert-published-slug";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_LIKES_PER_USER = 3;
@@ -24,6 +25,10 @@ function readCookie(request: Request, name: string): number {
 /** GET — trả về tổng lượt thích và số lượt thích của người dùng (từ cookie). */
 export async function GET(request: Request, { params }: RouteContext) {
   const { slug } = await params;
+  if (!(await assertPublishedSlug(slug))) {
+    return Response.json({ error: "not found" }, { status: 404 });
+  }
+
   const supabase = await createClient();
   const { data } = await supabase.from("post_likes").select("likes").eq("slug", slug).maybeSingle();
 
@@ -36,6 +41,10 @@ export async function GET(request: Request, { params }: RouteContext) {
 /** POST — cập nhật lượt thích (giới hạn 3/user qua cookie) qua RPC `add_post_likes`. */
 export async function POST(request: Request, { params }: RouteContext) {
   const { slug } = await params;
+  if (!(await assertPublishedSlug(slug))) {
+    return Response.json({ error: "not found" }, { status: 404 });
+  }
+
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return Response.json({ error: "invalid body" }, { status: 400 });

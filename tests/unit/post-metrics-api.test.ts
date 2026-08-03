@@ -4,12 +4,17 @@ const rpcMock = vi.fn();
 const selectMock = vi.fn();
 const eqMock = vi.fn();
 const maybeSingleMock = vi.fn();
+const assertPublishedSlugMock = vi.fn();
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: async () => ({
     rpc: rpcMock,
     from: () => ({ select: selectMock }),
   }),
+}));
+
+vi.mock("@/features/blog/lib/assert-published-slug", () => ({
+  assertPublishedSlug: (slug: string) => assertPublishedSlugMock(slug),
 }));
 
 function chainSelect(result: { data: unknown; error: unknown }) {
@@ -19,7 +24,10 @@ function chainSelect(result: { data: unknown; error: unknown }) {
 }
 
 describe("views route", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    assertPublishedSlugMock.mockResolvedValue(true);
+  });
 
   it("GET returns the current count (0 when missing)", async () => {
     chainSelect({ data: null, error: null });
@@ -40,10 +48,23 @@ describe("views route", () => {
     expect(rpcMock).toHaveBeenCalledWith("increment_post_view", { p_slug: "post-a" });
     expect(await res.json()).toBe(7);
   });
+
+  it("POST returns 404 for unpublished/unknown slug", async () => {
+    assertPublishedSlugMock.mockResolvedValue(false);
+    const { POST } = await import("@/app/api/posts/[slug]/views/route");
+    const res = await POST(new Request("http://localhost", { method: "POST" }), {
+      params: Promise.resolve({ slug: "nope" }),
+    });
+    expect(res.status).toBe(404);
+    expect(rpcMock).not.toHaveBeenCalled();
+  });
 });
 
 describe("likes route", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    assertPublishedSlugMock.mockResolvedValue(true);
+  });
 
   it("GET returns likes and cookie-derived currentUserLikes", async () => {
     chainSelect({ data: { likes: 12 }, error: null });
@@ -78,5 +99,15 @@ describe("likes route", () => {
     const res = await POST(req, { params: Promise.resolve({ slug: "post-a" }) });
     expect(res.status).toBe(400);
     expect(rpcMock).not.toHaveBeenCalled();
+  });
+
+  it("GET returns 404 for unpublished/unknown slug", async () => {
+    assertPublishedSlugMock.mockResolvedValue(false);
+    const { GET } = await import("@/app/api/posts/[slug]/likes/route");
+    const res = await GET(new Request("http://localhost"), {
+      params: Promise.resolve({ slug: "nope" }),
+    });
+    expect(res.status).toBe(404);
+    expect(selectMock).not.toHaveBeenCalled();
   });
 });

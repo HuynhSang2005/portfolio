@@ -34,7 +34,7 @@ Two mechanisms, equally weighted, that a neighboring portfolio cannot truthfully
 
 ## Capabilities and Constraints
 
-Confirmed functionality targets: public portfolio pages (profile, skills, experience, projects), rich project case studies, an admin dashboard for content management, media upload/management, and a contact form. Blog, analytics, and realtime are deliberate later extensions, not initial scope.
+Confirmed functionality targets: public portfolio pages (profile, skills, experience, projects), a public MDX blog with views/likes, and a contact form (Turnstile + Resend). Rich project case studies, an admin dashboard for content management, and media upload/management remain planned. Craft playground, analytics, and realtime are deliberate later extensions.
 
 Confirmed non-goals: microservices, a separate NestJS/Express backend, multi-tenant CMS, public registration, AI editor, realtime collaboration, comments, complex analytics, a full Notion-class editor.
 
