@@ -26,48 +26,50 @@
 
 ## File Structure
 
-| File | Responsibility |
-| --- | --- |
-| `src/config/site.ts` | Zod-validated identity/nav/socials + scroll/theme constants (single source of truth) |
-| `src/components/icons/index.tsx` | Brand icon set: lucide wrappers + ported GitHub/LinkedIn/X SVGs |
-| `src/lib/fonts.ts` | `fontX` (local woff2) + `fontMono` (JetBrains Mono) |
-| `public/assets/X-*.woff2` | Copied font binaries |
-| `src/app/globals.css` | Full token system + utilities + base layer + view-transition CSS (template port) |
-| `src/app/providers.tsx` | Adds `@wrksz/themes` ThemeProvider |
-| `src/app/layout.tsx` | Fonts, os-macos script, Navigation, main wrapper (server) |
-| `src/components/layout/navigation.tsx` | Navigation composition (BottomDock desktop + ScrollTop) |
-| `src/components/layout/scroll-area.tsx` | Scrollport container (`SCROLL_AREA_ID`) |
-| `src/lib/hooks/use-mounted.ts` | Hydration guard hook |
-| `src/lib/hooks/use-scroll-direction.ts` | Shared scroll direction/position for scrollport |
-| `src/lib/hooks/use-meta-color.ts` | meta theme-color sync |
-| `src/stores/ui-store.ts` | Adds `soundEnabled` + `toggleSound()` |
-| `src/components/layout/sound-toggle.tsx` | Sound toggle (visual complete, store-backed stub) |
-| `src/components/layout/mode-toggle.tsx` | View Transitions theme toggle (defect-fixed) |
-| `src/components/layout/floating-dock.tsx` | Dock primitive (motion magnification) |
-| `src/components/layout/dock.tsx` | BottomDock composition (defect-fixed auto-hide) |
-| `src/components/ui/drawer.tsx` | shadcn-style drawer wrapper on `vaul-base` |
-| `src/components/layout/mobile-drawer.tsx` | Mobile navigation drawer |
-| `src/components/layout/floating-header.tsx` | Mobile sticky header (scrollTitle reveal) |
-| `src/components/layout/scroll-top.tsx` | Scroll-to-top button |
-| `src/components/layout/section.tsx` | Section chrome with corner marks |
-| `src/components/layout/separator.tsx` | Dashed-band separator |
-| `src/components/ui/button.tsx` | Restyled to template gradient/pill spec |
-| `src/app/page.tsx` | Stub home exercising full chrome (P2 replaces) |
-| `tests/unit/site-config.test.ts` | Config schema tests |
-| `tests/unit/use-scroll-direction.test.ts` | Hook logic tests |
-| `tests/unit/theme-toggle.test.ts` | Toggle helper + fallback tests |
-| `tests/e2e/foundation.visual.spec.ts` | Template-vs-clone visual diff + computed-style probes |
+| File                                        | Responsibility                                                                       |
+| ------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/config/site.ts`                        | Zod-validated identity/nav/socials + scroll/theme constants (single source of truth) |
+| `src/components/icons/index.tsx`            | Brand icon set: lucide wrappers + ported GitHub/LinkedIn/X SVGs                      |
+| `src/lib/fonts.ts`                          | `fontX` (local woff2) + `fontMono` (JetBrains Mono)                                  |
+| `public/assets/X-*.woff2`                   | Copied font binaries                                                                 |
+| `src/app/globals.css`                       | Full token system + utilities + base layer + view-transition CSS (template port)     |
+| `src/app/providers.tsx`                     | Adds `@wrksz/themes` ThemeProvider                                                   |
+| `src/app/layout.tsx`                        | Fonts, os-macos script, Navigation, main wrapper (server)                            |
+| `src/components/layout/navigation.tsx`      | Navigation composition (BottomDock desktop + ScrollTop)                              |
+| `src/components/layout/scroll-area.tsx`     | Scrollport container (`SCROLL_AREA_ID`)                                              |
+| `src/lib/hooks/use-mounted.ts`              | Hydration guard hook                                                                 |
+| `src/lib/hooks/use-scroll-direction.ts`     | Shared scroll direction/position for scrollport                                      |
+| `src/lib/hooks/use-meta-color.ts`           | meta theme-color sync                                                                |
+| `src/stores/ui-store.ts`                    | Adds `soundEnabled` + `toggleSound()`                                                |
+| `src/components/layout/sound-toggle.tsx`    | Sound toggle (visual complete, store-backed stub)                                    |
+| `src/components/layout/mode-toggle.tsx`     | View Transitions theme toggle (defect-fixed)                                         |
+| `src/components/layout/floating-dock.tsx`   | Dock primitive (motion magnification)                                                |
+| `src/components/layout/dock.tsx`            | BottomDock composition (defect-fixed auto-hide)                                      |
+| `src/components/ui/drawer.tsx`              | shadcn-style drawer wrapper on `vaul-base`                                           |
+| `src/components/layout/mobile-drawer.tsx`   | Mobile navigation drawer                                                             |
+| `src/components/layout/floating-header.tsx` | Mobile sticky header (scrollTitle reveal)                                            |
+| `src/components/layout/scroll-top.tsx`      | Scroll-to-top button                                                                 |
+| `src/components/layout/section.tsx`         | Section chrome with corner marks                                                     |
+| `src/components/layout/separator.tsx`       | Dashed-band separator                                                                |
+| `src/components/ui/button.tsx`              | Restyled to template gradient/pill spec                                              |
+| `src/app/page.tsx`                          | Stub home exercising full chrome (P2 replaces)                                       |
+| `tests/unit/site-config.test.ts`            | Config schema tests                                                                  |
+| `tests/unit/use-scroll-direction.test.ts`   | Hook logic tests                                                                     |
+| `tests/unit/theme-toggle.test.ts`           | Toggle helper + fallback tests                                                       |
+| `tests/e2e/foundation.visual.spec.ts`       | Template-vs-clone visual diff + computed-style probes                                |
 
 ---
 
 ### Task 1: Site config + brand icons
 
 **Files:**
+
 - Create: `src/config/site.ts`
 - Create: `src/components/icons/index.tsx`
 - Test: `tests/unit/site-config.test.ts`
 
 **Interfaces:**
+
 - Consumes: nothing (leaf task).
 - Produces:
   - `siteConfig: SiteConfig` — `{ name: string; tagline: string; email?: string; navbar: { href: string; label: string; icon: NavIconKey; isNew?: boolean }[]; socials: { name: string; url: string; icon: SocialIconKey }[] }`
@@ -109,7 +111,10 @@ describe("siteConfig", () => {
   it("rejects invalid config shapes", () => {
     expect(siteConfigSchema.safeParse({ name: "" }).success).toBe(false);
     expect(
-      siteConfigSchema.safeParse({ ...siteConfig, navbar: [{ href: "https://x.com", label: "Bad", icon: "home" }] }).success,
+      siteConfigSchema.safeParse({
+        ...siteConfig,
+        navbar: [{ href: "https://x.com", label: "Bad", icon: "home" }],
+      }).success,
     ).toBe(false);
   });
 });
@@ -127,13 +132,7 @@ Template references (`components/icons/index.tsx` lines 91-96, 113-130, 168-175)
 ```tsx
 // src/components/icons/index.tsx
 import type { SVGProps } from "react";
-import {
-  BookmarkIcon,
-  CalendarIcon,
-  HomeIcon,
-  MailIcon,
-  PencilIcon,
-} from "lucide-react";
+import { BookmarkIcon, CalendarIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
 
 export type IconProps = SVGProps<SVGSVGElement>;
 
@@ -244,11 +243,13 @@ Expected: exit 0, no errors.
 ### Task 2: Fonts + globals.css token/base port
 
 **Files:**
+
 - Create: `public/assets/X-Regular.woff2`, `public/assets/X-Medium.woff2` (binary copy)
 - Create: `src/lib/fonts.ts`
 - Modify: `src/app/globals.css` (full replace)
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces:
   - `fontX`, `fontMono` (next/font objects with `.variable` — used by Task 3 layout)
@@ -439,7 +440,9 @@ Full replacement content — template `packages/design-system/styles/globals.css
 
   body {
     @apply overscroll-y-none bg-background font-x text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     scroll-behavior: smooth;
     touch-action: manipulation;
   }
@@ -549,10 +552,9 @@ Full replacement content — template `packages/design-system/styles/globals.css
 }
 
 @utility layout-xl {
-  grid-template-columns: 1fr minmax(auto, 10rem) min(var(--breakpoint-sm), 100%) minmax(
-      auto,
-      10rem
-    ) 1fr;
+  grid-template-columns:
+    1fr minmax(auto, 10rem) min(var(--breakpoint-sm), 100%) minmax(auto, 10rem)
+    1fr;
 }
 
 @utility content-wrapper {
@@ -700,11 +702,13 @@ Expected: exit 0.
 ### Task 3: Theme provider + root layout shell
 
 **Files:**
+
 - Modify: `src/app/providers.tsx`
 - Modify: `src/app/layout.tsx`
 - Create: `src/components/layout/navigation.tsx` (shell; dock/scroll-top wired in Tasks 7-8 — export composition that renders only what exists so far)
 
 **Interfaces:**
+
 - Consumes: `fontX`, `fontMono` (Task 2).
 - Produces:
   - `Providers` with `ThemeProvider` wrapping children (props: `attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange`)
@@ -842,12 +846,14 @@ Expected: exit 0.
 ### Task 4: Scrollport + scroll hooks
 
 **Files:**
+
 - Create: `src/components/layout/scroll-area.tsx`
 - Create: `src/lib/hooks/use-mounted.ts`
 - Create: `src/lib/hooks/use-scroll-direction.ts`
 - Test: `tests/unit/use-scroll-direction.test.ts`
 
 **Interfaces:**
+
 - Consumes: `SCROLL_AREA_ID` (Task 1).
 - Produces:
   - `ScrollArea({ useScrollAreaId?: boolean; className?: string; children })` — renders `<div id?={SCROLL_AREA_ID} className={cn("scrollable-area relative flex w-full flex-col", className)}>`
@@ -989,11 +995,7 @@ interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   useScrollAreaId?: boolean;
 }
 
-export const ScrollArea = ({
-  useScrollAreaId = false,
-  className,
-  ...props
-}: ScrollAreaProps) => (
+export const ScrollArea = ({ useScrollAreaId = false, className, ...props }: ScrollAreaProps) => (
   <div
     {...(useScrollAreaId && { id: SCROLL_AREA_ID })}
     className={cn("scrollable-area relative flex w-full flex-col", className)}
@@ -1017,11 +1019,13 @@ Expected: exit 0.
 ### Task 5: Sound store slice + SoundToggle stub
 
 **Files:**
+
 - Modify: `src/stores/ui-store.ts`
 - Create: `src/components/layout/sound-toggle.tsx`
 - Test: `tests/unit/ui-store.test.ts`
 
 **Interfaces:**
+
 - Consumes: existing `createUiStore` factory/provider pattern.
 - Produces:
   - `UiState` gains `soundEnabled: boolean` (default `true` — template default is unmuted)
@@ -1114,11 +1118,7 @@ export function SoundToggle() {
       className="flex h-full w-full items-center justify-center"
       aria-label={soundEnabled ? "Mute sounds" : "Unmute sounds"}
     >
-      {soundEnabled ? (
-        <Volume2Icon className="size-4" />
-      ) : (
-        <VolumeOffIcon className="size-4" />
-      )}
+      {soundEnabled ? <Volume2Icon className="size-4" /> : <VolumeOffIcon className="size-4" />}
     </button>
   );
 }
@@ -1134,11 +1134,13 @@ Expected: PASS (2 tests); checks exit 0.
 ### Task 6: ModeToggle + meta-color hook
 
 **Files:**
+
 - Create: `src/lib/hooks/use-meta-color.ts`
 - Create: `src/components/layout/mode-toggle.tsx`
 - Test: `tests/unit/theme-toggle.test.ts`
 
 **Interfaces:**
+
 - Consumes: `META_THEME_COLORS` (Task 1), `@wrksz/themes` `useTheme` (Task 3 provider).
 - Produces:
   - `useMetaColor(): { metaColor: string; setMetaColor: (color: string) => void }`
@@ -1298,9 +1300,7 @@ export default function ModeToggle() {
   const switchTheme = useCallback(() => {
     const newTheme = getNextTheme(resolvedTheme);
     setTheme(newTheme);
-    setMetaColor(
-      resolvedTheme === "dark" ? META_THEME_COLORS.light : META_THEME_COLORS.dark,
-    );
+    setMetaColor(resolvedTheme === "dark" ? META_THEME_COLORS.light : META_THEME_COLORS.dark);
   }, [resolvedTheme, setTheme, setMetaColor]);
 
   return (
@@ -1384,11 +1384,13 @@ Expected: PASS (4 tests); checks exit 0.
 ### Task 7: Dock primitive + BottomDock
 
 **Files:**
+
 - Create: `src/components/layout/floating-dock.tsx`
 - Create: `src/components/layout/dock.tsx`
 - Modify: `src/components/layout/navigation.tsx`
 
 **Interfaces:**
+
 - Consumes: `siteConfig` + `Icons` (Task 1), `SoundToggle` (Task 5), `ModeToggle` (Task 6), `cn`.
 - Produces:
   - `Dock`, `DockIcon`, `DockIconActiveDot`, `dockVariants` (motion magnification primitive)
@@ -1589,11 +1591,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
-import {
-  Dock,
-  DockIcon,
-  DockIconActiveDot,
-} from "@/components/layout/floating-dock";
+import { Dock, DockIcon, DockIconActiveDot } from "@/components/layout/floating-dock";
 import ModeToggle from "@/components/layout/mode-toggle";
 import { SoundToggle } from "@/components/layout/sound-toggle";
 import { siteConfig } from "@/config/site";
@@ -1660,9 +1658,7 @@ function BottomDock({ className }: { className: string }) {
               <Link href={item.href}>
                 <ItemIcon className="size-4" />
               </Link>
-              {isItemActive(item.href) && (
-                <DockIconActiveDot isActive={isItemActive(item.href)} />
-              )}
+              {isItemActive(item.href) && <DockIconActiveDot isActive={isItemActive(item.href)} />}
             </DockIcon>
           );
         })}
@@ -1694,9 +1690,7 @@ function BottomDock({ className }: { className: string }) {
 }
 
 function DockSeparator() {
-  return (
-    <hr className="mask-gradient h-[36px] w-px shrink-0 border-0 bg-gray-400/50" />
-  );
+  return <hr className="mask-gradient h-[36px] w-px shrink-0 border-0 bg-gray-400/50" />;
 }
 
 export default BottomDock;
@@ -1730,6 +1724,7 @@ Expected: exit 0.
 ### Task 8: Drawer UI wrapper + MobileDrawer + FloatingHeader + ScrollTop
 
 **Files:**
+
 - Create: `src/components/ui/drawer.tsx`
 - Create: `src/components/layout/mobile-drawer.tsx`
 - Create: `src/components/layout/floating-header.tsx`
@@ -1737,6 +1732,7 @@ Expected: exit 0.
 - Modify: `src/components/layout/navigation.tsx`
 
 **Interfaces:**
+
 - Consumes: `siteConfig`, `Icons`, `SCROLL_AREA_ID`, `MOBILE_SCROLL_THRESHOLD` (Task 1); `useMounted` (Task 4); `Button` (existing `src/components/ui/button.tsx`); `vaul-base`.
 - Produces:
   - `Drawer, DrawerTrigger, DrawerContent, DrawerTitle, DrawerDescription, DrawerClose, DrawerHeader, DrawerFooter, DrawerOverlay, DrawerPortal` from `src/components/ui/drawer.tsx`
@@ -1772,10 +1768,7 @@ const DrawerOverlay = ({
   className,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Overlay>) => (
-  <DrawerPrimitive.Overlay
-    className={cn("fixed inset-0 z-50 bg-black/80", className)}
-    {...props}
-  />
+  <DrawerPrimitive.Overlay className={cn("fixed inset-0 z-50 bg-black/80", className)} {...props} />
 );
 DrawerOverlay.displayName = "DrawerOverlay";
 
@@ -2236,12 +2229,14 @@ Expected: exit 0; build succeeds (vaul-base compiles under Next 16).
 ### Task 9: Section/Separator chrome + Button restyle
 
 **Files:**
+
 - Create: `src/components/layout/section.tsx`
 - Create: `src/components/layout/separator.tsx`
 - Modify: `src/components/ui/button.tsx`
 - Modify: `src/app/page.tsx` (stub home exercising full chrome)
 
 **Interfaces:**
+
 - Consumes: globals utilities (Task 2), `ScrollArea`/`FloatingHeader` (Task 4/8), `siteConfig` (Task 1).
 - Produces:
   - `Section({ sectionClassName?, className?, children })` — corner marks + side lines chrome
@@ -2285,13 +2280,7 @@ const CornerMark = ({
   );
 };
 
-export const Section = ({
-  children,
-  sectionClassName,
-  className,
-  ref,
-  ...props
-}: SectionProps) => (
+export const Section = ({ children, sectionClassName, className, ref, ...props }: SectionProps) => (
   <section ref={ref} className={sectionClassName} {...props}>
     <div className="relative mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8">
       <div className={cn("relative py-3 sm:px-3 md:py-4", className)}>
@@ -2345,8 +2334,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 dark:inset-shadow-[1px_1px_1px,0px_0px_2px] dark:inset-shadow-white/15",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-foreground underline-offset-4 hover:underline",
       },
@@ -2430,10 +2418,12 @@ Expected: exit 0.
 ### Task 10: Playwright visual-diff harness + final validation
 
 **Files:**
+
 - Create: `tests/e2e/foundation.visual.spec.ts`
 - Modify: `playwright.config.ts` (screenshot dir/settings if needed)
 
 **Interfaces:**
+
 - Consumes: everything (full chrome on `/`).
 - Produces: repeatable fidelity gate — `bun run test:e2e` compares clone vs template.
 
@@ -2530,6 +2520,7 @@ test.describe("foundation fidelity", () => {
 ```
 
 Note: the first run stores template screenshots as baselines (`--update-snapshots`); the clone assertions then diff against the same baselines. Run sequence:
+
 1. `bunx playwright test tests/e2e/foundation.visual.spec.ts --update-snapshots` (template baselines)
 2. `bunx playwright test tests/e2e/foundation.visual.spec.ts` (diff clone vs baseline)
 

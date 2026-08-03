@@ -147,9 +147,9 @@ without any of them; only `/buddy` hard-fails. Our env model: `getPublicEnv()` (
 3. **Blog**: MDX pipeline, index, `[slug]` + code blocks, post views/likes (Supabase + RLS).
    — [spec](superpowers/specs/2026-08-03-p3-blog-design.md) · [plan](superpowers/plans/2026-08-03-p3-blog.md)
 4. **Contact**: form + Resend email + Turnstile + Workers rate limiter (new surface, no template counterpart).
+   Workers-true smoke via **Cloudflare deploy** (`huynhsang.id.vn`), not mandatory local `bun run preview`.
    — [spec](superpowers/specs/2026-08-03-p4-contact-design.md) · [plan](superpowers/plans/2026-08-03-p4-contact.md)
-5. **Extras** (each re-confirmed; spec written when picked up): craft playground, clock, llms routes,
-   buddy, cal, analytics.
+5. **Extras** (each re-confirmed; spec written when picked up): craft experiments (`cal-grid` / `vercel-grid`), craft feed/llms, clock, buddy, cal, analytics. **Note (2026-08-03):** craft masonry index + `[slug]` pulled into P4; remaining craft extras stay here.
 
 Re-validate gate before executing each phase: diff the plan's assumed paths/interfaces against the
 repo state at that time and update the plan doc in-place if they drift.

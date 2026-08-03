@@ -72,18 +72,18 @@ Boundary rules: `layout.tsx` stays a Server Component; chrome is client islands.
 
 ## 5. Component port notes
 
-| Component | Template source | Port notes |
-| --- | --- | --- |
-| Tokens/base CSS | `packages/design-system/styles/globals.css` | Port verbatim then adapt to Tailwind v4 `@theme`; fix duplicate `@keyframes reveal`; keep OKLCH values unchanged |
-| Fonts | template `fonts.ts` + woff2 assets | Copy woff2 files + MIT notice; `next/font/local` with same variable names/weights |
-| Scrollport | scroll-area components | Container with `.scrollable-area`; do not substitute native window scroll |
-| Dock | `components/navigation/dock/index.tsx` | **Defect fix:** idle auto-hide timer never arms (`if (timeoutRef.current)` guard wraps the `setTimeout`) — arm it correctly |
-| FloatingHeader | `components/navigation/floating-header.tsx` | Reveal-on-scroll-up behavior preserved |
-| MobileDrawer | `components/navigation/mobile-drawer.tsx` | vaul → vaul-base (`import { Drawer } from "vaul-base"`), same API |
-| ModeToggle | `components/navigation/dock/mode-toggle.tsx` | **Defect fix:** `startViewTransition` fallback must single-toggle and must not throw on unsupported browsers |
-| SoundToggle | `components/navigation/dock/sound-toggle.tsx` | Full visual/a11y; onClick only flips `ui-store.soundEnabled` |
-| Section/Separator/corners | `components/section.tsx`, `components/separator.tsx` | Exact padding/pattern values from DESIGN.md |
-| Button/Separator (ui) | design-system package | Restyle existing base-nova components to template gradient/hover specs (DESIGN.md §Components) |
+| Component                 | Template source                                      | Port notes                                                                                                                  |
+| ------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Tokens/base CSS           | `packages/design-system/styles/globals.css`          | Port verbatim then adapt to Tailwind v4 `@theme`; fix duplicate `@keyframes reveal`; keep OKLCH values unchanged            |
+| Fonts                     | template `fonts.ts` + woff2 assets                   | Copy woff2 files + MIT notice; `next/font/local` with same variable names/weights                                           |
+| Scrollport                | scroll-area components                               | Container with `.scrollable-area`; do not substitute native window scroll                                                   |
+| Dock                      | `components/navigation/dock/index.tsx`               | **Defect fix:** idle auto-hide timer never arms (`if (timeoutRef.current)` guard wraps the `setTimeout`) — arm it correctly |
+| FloatingHeader            | `components/navigation/floating-header.tsx`          | Reveal-on-scroll-up behavior preserved                                                                                      |
+| MobileDrawer              | `components/navigation/mobile-drawer.tsx`            | vaul → vaul-base (`import { Drawer } from "vaul-base"`), same API                                                           |
+| ModeToggle                | `components/navigation/dock/mode-toggle.tsx`         | **Defect fix:** `startViewTransition` fallback must single-toggle and must not throw on unsupported browsers                |
+| SoundToggle               | `components/navigation/dock/sound-toggle.tsx`        | Full visual/a11y; onClick only flips `ui-store.soundEnabled`                                                                |
+| Section/Separator/corners | `components/section.tsx`, `components/separator.tsx` | Exact padding/pattern values from DESIGN.md                                                                                 |
+| Button/Separator (ui)     | design-system package                                | Restyle existing base-nova components to template gradient/hover specs (DESIGN.md §Components)                              |
 
 ## 6. Data flow & state
 

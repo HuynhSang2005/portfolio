@@ -1,5 +1,5 @@
 ---
-name: HuynhSang Portfolio (Ruixen template clone)
+name: HuynhSang Portfolio
 description: A zinc-monochrome engineering portfolio — lab-notebook chrome, tactile dock, playful craft prototypes.
 colors:
   paper-white: "oklch(1 0 0)"
@@ -85,7 +85,7 @@ components:
     padding: "2px 8px"
 ---
 
-# Design System: HuynhSang Portfolio (Ruixen template clone)
+# Design System: HuynhSang Portfolio
 
 > **Provenance.** This system is extracted 1:1 from the design source of truth at
 > `portfolio-template-ui-ux/portfolio-main` (MIT-licensed template; retain its notice, remove all

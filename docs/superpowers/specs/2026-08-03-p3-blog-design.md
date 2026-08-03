@@ -80,16 +80,16 @@ supabase/
 
 ## 5. Component port notes
 
-| Component | Template source | Port notes |
-| --- | --- | --- |
-| Blog index | `app/blog/page.tsx` | Verbatim rows/typography; description text from `siteConfig.description`-adjacent copy (blog-specific string in config); `createOgImage`/Cloudinary removed |
-| Blog article | `app/blog/[slug]/page.tsx` | Verbatim layout (single column — **no TOC rail**, verified); `dayjs` → native `Date#toISOString`; author = `siteConfig.name` |
-| posts data | `features/blog/data/posts.ts` | Same fs/frontmatter logic (owned `parseFrontmatter` on `yaml`) + Zod parse per file (fail fast at build); `readTime` fallback compute |
-| MDX wrapper | `components/mdx.tsx` | `next-mdx-remote/rsc` → `next-mdx-remote-client/rsc` (exports verified); identical plugin order minus docs-specific plugins (§7.5); `CopyButtonWithAnalytics` → `CopyButton` (no analytics); `MDXLinkWithAnalytics` → default anchor |
-| Typography | `packages/design-system/components/ui/typography.tsx` | Verbatim classes; Radix `Slot` + `asChild` removed (plain `div`); `border-edge`/`border-s-border` utilities must exist in globals — verify P1 token port, add aliases if missing |
-| Table | `packages/design-system/components/ui/table.tsx` | Verbatim (no Radix) |
-| Language icons | `components/icons` (`getIconForLanguageExtension`) | Subset: generic `FileCodeIcon` fallback + per-extension mapping for `ts/tsx/js/jsx/json/bash/css/html/md` (lucide) |
-| Views/likes hooks | `archive/lib/hooks/usePostViews.ts`, `usePostLikes.ts` | Semantics verbatim (60s dedupe, optimistic +1, 1s debounce batch, ≤3/user); SWR → TanStack Query; `useDebounce` → own `useEffect` timeout |
+| Component         | Template source                                        | Port notes                                                                                                                                                                                                                           |
+| ----------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Blog index        | `app/blog/page.tsx`                                    | Verbatim rows/typography; description text from `siteConfig.description`-adjacent copy (blog-specific string in config); `createOgImage`/Cloudinary removed                                                                          |
+| Blog article      | `app/blog/[slug]/page.tsx`                             | Verbatim layout (single column — **no TOC rail**, verified); `dayjs` → native `Date#toISOString`; author = `siteConfig.name`                                                                                                         |
+| posts data        | `features/blog/data/posts.ts`                          | Same fs/frontmatter logic (owned `parseFrontmatter` on `yaml`) + Zod parse per file (fail fast at build); `readTime` fallback compute                                                                                                |
+| MDX wrapper       | `components/mdx.tsx`                                   | `next-mdx-remote/rsc` → `next-mdx-remote-client/rsc` (exports verified); identical plugin order minus docs-specific plugins (§7.5); `CopyButtonWithAnalytics` → `CopyButton` (no analytics); `MDXLinkWithAnalytics` → default anchor |
+| Typography        | `packages/design-system/components/ui/typography.tsx`  | Verbatim classes; Radix `Slot` + `asChild` removed (plain `div`); `border-edge`/`border-s-border` utilities must exist in globals — verify P1 token port, add aliases if missing                                                     |
+| Table             | `packages/design-system/components/ui/table.tsx`       | Verbatim (no Radix)                                                                                                                                                                                                                  |
+| Language icons    | `components/icons` (`getIconForLanguageExtension`)     | Subset: generic `FileCodeIcon` fallback + per-extension mapping for `ts/tsx/js/jsx/json/bash/css/html/md` (lucide)                                                                                                                   |
+| Views/likes hooks | `archive/lib/hooks/usePostViews.ts`, `usePostLikes.ts` | Semantics verbatim (60s dedupe, optimistic +1, 1s debounce batch, ≤3/user); SWR → TanStack Query; `useDebounce` → own `useEffect` timeout                                                                                            |
 
 ## 6. Data flow & state
 

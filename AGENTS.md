@@ -4,20 +4,20 @@ Portfolio site: Next.js 16 App Router (`src/app`), React 19, TypeScript strict, 
 
 ## Commands
 
-| Command                                   | Purpose                                     |
-| ----------------------------------------- | ------------------------------------------- |
-| `bun run dev`                             | Next.js dev server (Turbopack)              |
-| `bun run build` / `bun run start`         | Next production build / serve               |
-| `bun run typecheck`                       | `tsc --noEmit`                              |
-| `bun run lint` / `bun run lint:fix`       | Oxlint (only linter)                        |
-| `bun run format` / `bun run format:check` | Oxfmt (only formatter)                      |
-| `bun run test` / `bun run test:run`       | Vitest (watch / single run)                 |
-| `bun run test:e2e`                        | Playwright e2e                              |
-| `bun run check`                           | typecheck + lint + format:check + test:run  |
-| `bun run validate`                        | check + build                               |
-| `bun run preview`                         | OpenNext build + Workers preview            |
-| `bun run deploy`                          | OpenNext build + Workers deploy (ask first) |
-| `bun run cf-typegen`                      | Generate Cloudflare env types               |
+| Command                                   | Purpose                                                                              |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| `bun run dev`                             | Next.js dev server (Turbopack)                                                       |
+| `bun run build` / `bun run start`         | Next production build / serve                                                        |
+| `bun run typecheck`                       | `tsc --noEmit`                                                                       |
+| `bun run lint` / `bun run lint:fix`       | Oxlint (only linter)                                                                 |
+| `bun run format` / `bun run format:check` | Oxfmt (only formatter)                                                               |
+| `bun run test` / `bun run test:run`       | Vitest (watch / single run)                                                          |
+| `bun run test:e2e`                        | Playwright e2e                                                                       |
+| `bun run check`                           | typecheck + lint + format:check + test:run                                           |
+| `bun run validate`                        | check + build                                                                        |
+| `bun run preview`                         | OpenNext build + **local** Workers preview (optional/rare; not a default gate)       |
+| `bun run deploy`                          | OpenNext build + Workers deploy (ask first; smoke on Cloudflare / `huynhsang.id.vn`) |
+| `bun run cf-typegen`                      | Generate Cloudflare env types                                                        |
 
 Package manager is Bun only: `bun add`, `bun add --dev`, `bun remove`, `bun run <script>`, `bunx`. Never npm, npx, pnpm, yarn, or their lockfiles.
 
@@ -49,7 +49,7 @@ Package manager is Bun only: `bun add`, `bun add --dev`, `bun remove`, `bun run 
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-This is NOT the Next.js you know: APIs, conventions, and file structure differ from training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing code; bundled docs win over prior knowledge. Heed deprecation notices (e.g. `middleware.ts` is deprecated — use `src/proxy.ts`).
+This is NOT the Next.js you know: APIs, conventions, and file structure differ from training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing code; bundled docs win over prior knowledge. Prefer `proxy.ts` per Next.js docs; **exception for Cloudflare:** keep `src/middleware.ts` (Edge) until `@opennextjs/cloudflare` on npm supports Node `proxy.ts` (1.20.2 still exits on Node middleware).
 <!-- END:nextjs-agent-rules -->
 
 - App Router only under `src/app`; prefer React Server Components.
@@ -60,7 +60,7 @@ This is NOT the Next.js you know: APIs, conventions, and file structure differ f
 
 ## Supabase
 
-- Clients: `src/lib/supabase/server.ts` (RSC / Server Actions / Route Handlers), `src/lib/supabase/client.ts` (browser), session refresh in `src/lib/supabase/proxy.ts` wired from `src/proxy.ts`.
+- Clients: `src/lib/supabase/server.ts` (RSC / Server Actions / Route Handlers), `src/lib/supabase/client.ts` (browser), session refresh in `src/lib/supabase/proxy.ts` wired from `src/middleware.ts` (OpenNext Edge workaround; see Next section).
 - Validate public env via `getPublicEnv()` (`src/lib/env/schema.ts`) — no non-null assertions on env.
 - `.env.example` is the template for env changes; schema/migrations live under `supabase/`.
 - Use the Supabase plugin + Supabase MCP for Auth, RLS, and SSR cookie patterns.
@@ -68,9 +68,13 @@ This is NOT the Next.js you know: APIs, conventions, and file structure differ f
 ## Cloudflare / OpenNext
 
 - Config: `wrangler.jsonc`, `open-next.config.ts`, `.dev.vars` / `.dev.vars.example`.
-- Local DX is `bun run dev`; `bun run preview` for the Workers runtime (prefer WSL — Windows preview is flaky).
-- Avoid Node-only native modules on server paths that Workers cannot run.
+- **Daily DX:** `bun run dev` (+ `initOpenNextCloudflareForDev` in `next.config.ts`). This is the OpenNext-recommended active development loop.
+- **Workers-true verification:** `bun run deploy` (ask first) → smoke on Cloudflare. Custom domain: **`huynhsang.id.vn`**. Prefer Workers Builds CI for reproducible production builds when available.
+- **`bun run preview`:** optional / rare local workerd check only. **Not** a default gate. OpenNext build + workerd saturates this laptop (≈8GB usable); never run in parallel with other heavy jobs; kill leftover `workerd` after any preview.
+- Invoke OpenNext preview/deploy CLIs with **Node** (not `bunx --bun` wrapping wrangler) — Wrangler rejects the Bun runtime.
+- Avoid Node-only native modules on server paths that Workers cannot run. Bundle MDX/content for Workers (no runtime `fs` under `src/features/**/content`); keep craft videos under `public/media/craft/` so they do not shadow `/craft/[slug]`.
 - Read OpenNext Cloudflare docs before changing caching, bindings, or deploy config; use the Cloudflare plugin + Cloudflare MCPs for bindings, builds, and observability.
+- Decision record: `.superpowers/sdd/dx-cloudflare-decision.md`.
 
 ## UI stack
 
@@ -134,19 +138,24 @@ Check installed packages for agent-facing docs before going external — they ar
 
 Before editing: read this file → inspect the relevant code (srcwalk) → read bundled Next docs for Next work → check existing dependencies and scripts → choose the smallest change set.
 
-After editing: `bun run format` → `bun run typecheck` → `bun run lint` → relevant tests (`bun run test:run`; `bun run test:e2e` for critical flows) → `bun run build` when touching routing, config, rendering/caching boundaries, metadata, `src/proxy.ts`, server code, OpenNext/Wrangler, or major dependencies → review the diff for out-of-scope changes → report files changed, checks run, and remaining errors.
+After editing: `bun run format` → `bun run typecheck` → `bun run lint` → relevant tests (`bun run test:run`; `bun run test:e2e` for critical flows) → `bun run build` when touching routing, config, rendering/caching boundaries, metadata, `src/middleware.ts`, server code, OpenNext/Wrangler, or major dependencies → review the diff for out-of-scope changes → report files changed, checks run, and remaining errors.
 
 ## Learned User Preferences
 
 - Use only `AGENTS.md` for agent instructions; do not create `CLAUDE.md`.
-- Prefer Conventional Commits; do not leave Cursor/agent identity (`cursoragent`) as the git commit author in history.
+- Prefer Conventional Commits; do not leave Cursor/agent identity (`cursoragent`) as the git commit author in history (avoid “Cursor” coworker attribution on remote commits).
 - Stick to Next.js stable releases only; do not use canary or preview channels unless explicitly asked.
-- Configure OpenNext/Wrangler and preview/deploy scripts without running `wrangler login` or production deploy unless explicitly asked.
+- Configure OpenNext/Wrangler scripts without running `wrangler login` or production deploy unless explicitly asked. Workers-true smoke is via **deploy** (Cloudflare), not mandatory local `preview`.
 - Vet dependencies before proposing them: verify maintenance with authoritative data (npm registry publish dates, download counts, GitHub activity); prefer actively-maintained modern packages or small owned/local utilities over stale deps (user rejected `next-themes`, `react-fast-marquee`, `reading-time`, `github-slugger`, `gray-matter`). If data shows a package the user called stale is actually maintained, keep it and present the evidence (e.g. `remark-gfm`).
 - Gate execution on explicit user approval: the user reviews and approves specs, then plans (sometimes in batches), before implementation starts; do not execute until the user says so.
+- On this machine (≈8GB usable RAM): one heavy job at a time; do not parallel OpenNext builds, local Workers preview, and other agent loops; kill leftover `workerd`/heavy processes if CPU/RAM saturates.
+- TSDoc (and brief comments) on exported symbols must be **tiếng Việt** (short, precise, internal-codebase style) for this repo’s implementation work.
 
 ## Learned Workspace Facts
 
 - Supabase project for this portfolio lives under the HuynhSang workspace/organization (project name `portfolio`); never store or commit database passwords or other secrets in docs.
 - pnpm is not installed on this machine; run pnpm-based third-party projects (e.g. the reference template) with Bun instead.
 - Ratified build strategy (in `PRODUCT.md`): replicate the `portfolio-template-ui-ux/portfolio-main` UI/UX/design/animation 100% (MIT license, author Sri Somanaath G — remove all author personal info before publishing) re-platformed to this repo's stack; user-approved phase specs/plans live under `docs/superpowers/specs/` and `docs/superpowers/plans/`.
+- Cloudflare custom domain for the Worker: **`huynhsang.id.vn`**. Workers DX ratified 2026-08-03: develop with `bun run dev`; verify bindings/rate-limit/Resend via deploy + remote smoke — not local `bun run preview` as a completion gate.
+- `initOpenNextCloudflareForDev` is gated behind `OPENNEXT_CLOUDFLARE_DEV=1` (default off) so daily `bun run dev` stays light and avoids Turbopack memory-threshold restarts that spuriously 404 `/`.
+- Cloudflare Workers Free gzip script limit is ~3 MiB: precompile MDX via `scripts/bundle-mdx-content.ts` (no runtime MDX `eval` / `new Function`), keep Shiki language sets slim, and avoid full `shiki` bundles that blow the Worker.
