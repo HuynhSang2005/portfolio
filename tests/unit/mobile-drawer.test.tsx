@@ -28,6 +28,7 @@ describe("MobileDrawer", () => {
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("Craft")).toBeInTheDocument();
     expect(screen.getByText("Blog")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
   });
 
   it("shows placeholder trigger before client mount", () => {
