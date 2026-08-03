@@ -15,6 +15,7 @@
     ".cursor/**",
     ".agents/**",
     ".impeccable/**",
+    ".superpowers/**",
     ".playwright/**",
     "portfolio-template-ui-ux/**",
     "*.tsbuildinfo",
