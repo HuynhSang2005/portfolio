@@ -1,4 +1,0 @@
-interface:
-  display_name: "AGENTS.md Standard"
-  short_description: "Design repo context for coding agents"
-  default_prompt: "Use $agents-md-standard to design or improve AGENTS.md as scoped repository context for AI coding agents."
