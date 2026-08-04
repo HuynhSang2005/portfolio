@@ -19,8 +19,8 @@ describe("usePostViews", () => {
 
   it("fetches then increments exactly once per mount", async () => {
     vi.mocked(fetch)
-      .mockResolvedValueOnce(new Response("10")) // GET
-      .mockResolvedValueOnce(new Response("11")); // POST increment
+      .mockResolvedValueOnce(new Response(JSON.stringify({ views: 10 }))) // GET
+      .mockResolvedValueOnce(new Response(JSON.stringify({ views: 11 }))); // POST increment
     const { result } = renderHook(() => usePostViews("post-a"), { wrapper: wrapper() });
     await waitFor(() => expect(result.current.views).toBe(11));
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);

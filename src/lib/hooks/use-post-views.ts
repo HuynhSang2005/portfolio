@@ -8,13 +8,15 @@ const API_URL = (slug: string) => `/api/posts/${slug}/views`;
 async function getPostViews(slug: string): Promise<number> {
   const res = await fetch(API_URL(slug));
   if (!res.ok) throw new Error("failed to fetch views");
-  return res.json();
+  const body = (await res.json()) as { views: number };
+  return body.views;
 }
 
 async function incrementPostViews(slug: string): Promise<number> {
   const res = await fetch(API_URL(slug), { method: "POST" });
   if (!res.ok) throw new Error("failed to increment views");
-  return res.json();
+  const body = (await res.json()) as { views: number };
+  return body.views;
 }
 
 /**

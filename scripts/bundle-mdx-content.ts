@@ -32,11 +32,9 @@ function escapeTemplateLiteral(raw: string): string {
 }
 
 async function markdownBodyToHtml(body: string): Promise<string> {
-  const processor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeSlug);
+  // Không cho phép raw HTML passthrough — nội dung MDX là markdown thuần,
+  // raw HTML từ tác giả sẽ bị loại bỏ thay vì render nguyên (XSS surface).
+  const processor = unified().use(remarkParse).use(remarkGfm).use(remarkRehype).use(rehypeSlug);
 
   const mdast = processor.parse(body);
   const hast = await processor.run(mdast);
