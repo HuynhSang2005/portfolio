@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -28,6 +28,8 @@ export function RevealOnLoad({
   className,
   direction = "up",
 }: RevealOnLoadProps) {
+  const reduceMotion = useReducedMotion();
+
   const directionOffset = {
     up: { y: 20, x: 0 },
     down: { y: -20, x: 0 },
@@ -37,17 +39,21 @@ export function RevealOnLoad({
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        ...directionOffset[direction],
-      }}
+      initial={
+        reduceMotion
+          ? false
+          : {
+              opacity: 0,
+              ...directionOffset[direction],
+            }
+      }
       animate={{
         opacity: 1,
         x: 0,
         y: 0,
       }}
       transition={{
-        duration,
+        duration: reduceMotion ? 0 : duration,
         delay,
         ease: [0.25, 0.4, 0.25, 1],
       }}

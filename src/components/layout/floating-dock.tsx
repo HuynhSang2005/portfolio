@@ -4,8 +4,10 @@ import { type VariantProps, cva } from "class-variance-authority";
 import {
   AnimatePresence,
   type HTMLMotionProps,
+  LazyMotion,
   type MotionValue,
-  motion,
+  domAnimation,
+  m,
   useAnimation,
   useMotionValue,
   useSpring,
@@ -44,18 +46,20 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
     };
 
     return (
-      <motion.footer
-        ref={ref}
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Number.POSITIVE_INFINITY)}
-        {...(props as HTMLMotionProps<"footer">)}
-        className={cn(dockVariants({ className }))}
-      >
-        <div className="-top-px -z-1 absolute h-px w-[95%] bg-linear-to-r from-transparent via-neutral-200 to-transparent opacity-20 dark:via-neutral-700 dark:to-transparent" />
-        <div className="flex w-full items-end gap-2 py-2 sm:h-[72px] sm:overflow-x-auto sm:overflow-y-hidden md:h-auto md:overflow-visible">
-          {renderChildren()}
-        </div>
-      </motion.footer>
+      <LazyMotion features={domAnimation}>
+        <m.footer
+          ref={ref}
+          onMouseMove={(e) => mouseX.set(e.pageX)}
+          onMouseLeave={() => mouseX.set(Number.POSITIVE_INFINITY)}
+          {...(props as HTMLMotionProps<"footer">)}
+          className={cn(dockVariants({ className }))}
+        >
+          <div className="-top-px -z-1 absolute h-px w-[95%] bg-linear-to-r from-transparent via-neutral-200 to-transparent opacity-20 dark:via-neutral-700 dark:to-transparent" />
+          <div className="flex w-full items-end gap-2 py-2 sm:h-[72px] sm:overflow-x-auto sm:overflow-y-hidden md:h-auto md:overflow-visible">
+            {renderChildren()}
+          </div>
+        </m.footer>
+      </LazyMotion>
     );
   },
 );
@@ -100,7 +104,7 @@ const DockIcon = ({ mouseX, title, className, children, ...props }: DockIconProp
   };
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       animate={controls}
       initial={{ y: 0 }}
@@ -123,17 +127,17 @@ const DockIcon = ({ mouseX, title, className, children, ...props }: DockIconProp
     >
       <AnimatePresence>
         {hovered && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 2 }}
             className="-translate-x-1/2 -top-8 absolute left-1/2 w-fit whitespace-pre rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-neutral-700 text-xs dark:border-neutral-900 dark:bg-neutral-800 dark:text-white"
           >
             {title}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-      <motion.div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
+      <m.div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child) && child.type !== DockIconActiveDot) {
             return React.cloneElement(child as React.ReactElement<{ className?: string }>, {
@@ -145,8 +149,8 @@ const DockIcon = ({ mouseX, title, className, children, ...props }: DockIconProp
           }
           return child;
         })}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 };
 
@@ -165,7 +169,7 @@ const DockIconActiveDot: React.FC<DockIconActiveDotProps> = ({
   style,
 }) => {
   return (
-    <motion.div
+    <m.div
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: isActive ? 1 : 0, opacity: isActive ? 1 : 0 }}
       transition={{ duration: 0.2 }}

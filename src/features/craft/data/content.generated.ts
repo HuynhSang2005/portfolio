@@ -8,9 +8,9 @@ description: An accordion component with image preview tooltips on hover
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/accordion-with-image-tooltip-light.mp4"
-video: "/media/craft/accordion-with-image-tooltip-light.mp4"
-videoDark: "/media/craft/accordion-with-image-tooltip-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/accordion-with-image-tooltip-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/accordion-with-image-tooltip-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/accordion-with-image-tooltip-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -25,9 +25,9 @@ description: A mega navigation menu inspired by Apple's design language
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/apple-mega-nav-light.mp4"
-video: "/media/craft/apple-mega-nav-light.mp4"
-videoDark: "/media/craft/apple-mega-nav-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/apple-mega-nav-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/apple-mega-nav-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/apple-mega-nav-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -42,9 +42,9 @@ description: Text animation with a soft bloom and glow effect
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/bloom-text-light.mp4"
-video: "/media/craft/bloom-text-light.mp4"
-videoDark: "/media/craft/bloom-text-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/bloom-text-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/bloom-text-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/bloom-text-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -59,9 +59,9 @@ description: A call-to-action component with a meteor shower animation effect
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/cta-meteor-light.mp4"
-video: "/media/craft/cta-meteor-light.mp4"
-videoDark: "/media/craft/cta-meteor-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/cta-meteor-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/cta-meteor-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/cta-meteor-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -76,9 +76,9 @@ description: A footer component with a subtle flicker animation effect
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/flicker-footer-light.mp4"
-video: "/media/craft/flicker-footer-light.mp4"
-videoDark: "/media/craft/flicker-footer-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/flicker-footer-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/flicker-footer-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/flicker-footer-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -93,9 +93,9 @@ description: Animated hero section with dynamic bar transitions
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/hero-bars-light.mp4"
-video: "/media/craft/hero-bars-light.mp4"
-videoDark: "/media/craft/hero-bars-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-bars-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-bars-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-bars-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -110,9 +110,9 @@ description: A mobile-first hero section showcasing app screens with smooth tran
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/hero-mobile-showcase-light.mp4"
-video: "/media/craft/hero-mobile-showcase-light.mp4"
-videoDark: "/media/craft/hero-mobile-showcase-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-mobile-showcase-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-mobile-showcase-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/hero-mobile-showcase-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -127,9 +127,9 @@ description: An Instagram-style stories viewer component with progress bars and 
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/instagram-stories-light.mp4"
-video: "/media/craft/instagram-stories-light.mp4"
-videoDark: "/media/craft/instagram-stories-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/instagram-stories-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/instagram-stories-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/instagram-stories-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -144,9 +144,9 @@ description: An interactive map-based location picker component
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/map-location-picker-light.mp4"
-video: "/media/craft/map-location-picker-light.mp4"
-videoDark: "/media/craft/map-location-picker-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/map-location-picker-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/map-location-picker-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/map-location-picker-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -161,9 +161,9 @@ description: A carousel component designed for showcasing 3D models or product i
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/models-carousel-light.mp4"
-video: "/media/craft/models-carousel-light.mp4"
-videoDark: "/media/craft/models-carousel-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/models-carousel-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/models-carousel-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/models-carousel-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -178,9 +178,9 @@ description: A title animation that morphs between project names with smooth tra
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/project-title-morph-light.mp4"
-video: "/media/craft/project-title-morph-light.mp4"
-videoDark: "/media/craft/project-title-morph-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/project-title-morph-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/project-title-morph-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/project-title-morph-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -195,9 +195,9 @@ description: A timeline component with scroll-driven animation effects
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/scroll-fx-timeline-light.mp4"
-video: "/media/craft/scroll-fx-timeline-light.mp4"
-videoDark: "/media/craft/scroll-fx-timeline-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-timeline-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-timeline-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-timeline-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -212,9 +212,9 @@ description: Scroll-driven visual effects and parallax animations
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/scroll-fx-light.mp4"
-video: "/media/craft/scroll-fx-light.mp4"
-videoDark: "/media/craft/scroll-fx-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-fx-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -229,9 +229,9 @@ description: A split-screen video gallery with scroll-driven transitions
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/scroll-split-video-gallery-light.mp4"
-video: "/media/craft/scroll-split-video-gallery-light.mp4"
-videoDark: "/media/craft/scroll-split-video-gallery-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-split-video-gallery-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-split-video-gallery-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/scroll-split-video-gallery-dark.mp4"
 aspect_ratio: 1.6
 ---
 
@@ -246,9 +246,9 @@ description: A testimonials component with split-panel tabbed navigation
 published: true
 type: "component"
 theme: "dark"
-image: "/media/craft/testimonials-split-tabs-light.mp4"
-video: "/media/craft/testimonials-split-tabs-light.mp4"
-videoDark: "/media/craft/testimonials-split-tabs-dark.mp4"
+image: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/testimonials-split-tabs-light.mp4"
+video: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/testimonials-split-tabs-light.mp4"
+videoDark: "https://pub-8c30a4d2d78c40d08001fffdce8676b0.r2.dev/craft/testimonials-split-tabs-dark.mp4"
 aspect_ratio: 1.6
 ---
 
