@@ -60,6 +60,18 @@ function BottomDock({ className }: { className: string }) {
       onMouseLeave={() => {
         startTimeout();
       }}
+      onFocusCapture={() => {
+        // Keyboard: giữ dock hiển thị khi focus nằm trong dock (WCAG 2.1.1).
+        setActive(true);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      }}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          startTimeout();
+        }
+      }}
       className={cn(
         "-translate-x-1/2 fixed bottom-0 left-1/2 z-40 h-[clamp(80px,10vh,200px)] w-full",
         className,
@@ -75,7 +87,7 @@ function BottomDock({ className }: { className: string }) {
           const ItemIcon = Icons[item.icon];
           return (
             <DockIcon key={item.label} title={item.label}>
-              <Link href={item.href}>
+              <Link href={item.href} aria-label={item.label}>
                 <ItemIcon className="size-4" />
               </Link>
               {isItemActive(item.href) && <DockIconActiveDot isActive={isItemActive(item.href)} />}
@@ -89,7 +101,12 @@ function BottomDock({ className }: { className: string }) {
               const SocialIcon = Icons[social.icon];
               return (
                 <DockIcon key={social.name} title={social.name}>
-                  <Link href={social.url} target="_blank">
+                  <Link
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.name}
+                  >
                     <SocialIcon className="size-4" />
                   </Link>
                 </DockIcon>

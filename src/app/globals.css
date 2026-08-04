@@ -158,15 +158,18 @@
 
   a,
   button {
-    @apply cursor-pointer outline-hidden;
+    @apply cursor-pointer;
   }
 
   a {
     @apply transition-colors duration-300;
   }
 
-  button:focus {
-    @apply outline-hidden;
+  /* Focus ring rõ ràng cho keyboard nav — không strip outline toàn cục (WCAG 2.4.7). */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 
   button:disabled,

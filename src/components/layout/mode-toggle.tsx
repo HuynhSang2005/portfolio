@@ -92,7 +92,9 @@ export default function ModeToggle() {
   }, [resolvedTheme, setTheme, setMetaColor]);
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       className="flex h-full w-full items-center justify-center"
       onClick={() => {
         playClick();
@@ -160,6 +162,6 @@ export default function ModeToggle() {
           }
         />
       </m.svg>
-    </div>
+    </button>
   );
 }
