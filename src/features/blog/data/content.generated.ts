@@ -53,11 +53,11 @@ A quick tour of the pieces that make this blog work.
 
 ## The Pipeline
 
-| Stage     | Tool                   |
-| --------- | ---------------------- |
-| Parse     | yaml frontmatter       |
-| Render    | next-mdx-remote-client |
-| Highlight | rehype-pretty-code     |
+| Stage  | Tool                                     |
+| ------ | ---------------------------------------- |
+| Parse  | yaml frontmatter + remark                |
+| Render | precompiled HTML (Workers-safe, no eval) |
+| Slugs  | rehype-slug heading ids                  |
 
 > Good infrastructure disappears. You notice it only when it breaks.
 
@@ -100,15 +100,15 @@ export const htmlBySlug: Record<string, string> = {
 <tbody>
 <tr>
 <td>Parse</td>
-<td>yaml frontmatter</td>
+<td>yaml frontmatter + remark</td>
 </tr>
 <tr>
 <td>Render</td>
-<td>next-mdx-remote-client</td>
+<td>precompiled HTML (Workers-safe, no eval)</td>
 </tr>
 <tr>
-<td>Highlight</td>
-<td>rehype-pretty-code</td>
+<td>Slugs</td>
+<td>rehype-slug heading ids</td>
 </tr>
 </tbody>
 </table>
