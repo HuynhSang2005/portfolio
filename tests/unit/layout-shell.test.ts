@@ -14,9 +14,10 @@ describe("root layout shell", () => {
     expect(layout).toContain("initialScale: 1");
   });
 
-  it("exports Huỳnh Sang metadata", () => {
-    expect(layout).toContain('title: "Huỳnh Sang"');
-    expect(layout).toContain('description: "Personal portfolio"');
+  it("exports brand metadata with metadataBase and title template", () => {
+    expect(layout).toContain("metadataBase: new URL(SITE_URL)");
+    expect(layout).toContain("template:");
+    expect(layout).toContain("description: siteConfig.description");
   });
 
   it("defines root shell structure per brief", () => {

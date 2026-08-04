@@ -18,9 +18,9 @@ describe("home page source", () => {
     expect(page).not.toContain('from "@/components/ui/separator"');
   });
 
-  it("includes generateMetadata and JSON-LD Organization", () => {
+  it("includes generateMetadata and JSON-LD Person", () => {
     expect(page).toContain("export async function generateMetadata");
-    expect(page).toContain('"@type": "Organization"');
+    expect(page).toContain('"@type": "Person"');
   });
 
   it("wires all home sections and WordmarkFooter", () => {

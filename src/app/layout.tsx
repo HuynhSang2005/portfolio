@@ -4,7 +4,7 @@ import type React from "react";
 
 import { Providers } from "@/app/providers";
 import Navigation from "@/components/layout/navigation";
-import { META_THEME_COLORS } from "@/config/site";
+import { META_THEME_COLORS, SITE_URL, siteConfig } from "@/config/site";
 import { fontMono, fontX } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
@@ -17,8 +17,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Huỳnh Sang",
-  description: "Personal portfolio",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${siteConfig.name} — ${siteConfig.jobTitle}`,
+    template: `%s · ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 const platformScript = String.raw`
@@ -44,6 +56,12 @@ export default function RootLayout({
         <script type="text/javascript" dangerouslySetInnerHTML={{ __html: platformScript }} />
       </head>
       <body suppressHydrationWarning>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:text-sm focus:ring-2 focus:ring-ring"
+        >
+          Skip to content
+        </a>
         {/* ThemeProvider từ @wrksz/themes/next là async RSC — không đặt trong "use client". */}
         <ThemeProvider
           attribute="class"

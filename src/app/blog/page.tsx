@@ -3,17 +3,19 @@ import Link from "next/link";
 
 import { FloatingHeader } from "@/components/layout/floating-header";
 import { ScrollArea } from "@/components/layout/scroll-area";
+import { SITE_URL } from "@/config/site";
 import { getAllBlogPosts } from "@/features/blog/data/posts";
 import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
 const BLOG_DESCRIPTION =
   "Thoughts on software engineering, UI architecture, and building things that work.";
 
-/** Metadata trang index blog — title và mô tả cố định. */
+/** Metadata trang index blog — title, mô tả và canonical cố định. */
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Blog",
     description: BLOG_DESCRIPTION,
+    alternates: { canonical: "/blog" },
   };
 }
 
@@ -24,6 +26,9 @@ export default async function BlogPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
+    name: "Blog",
+    url: `${SITE_URL}/blog`,
+    description: BLOG_DESCRIPTION,
   };
 
   return (

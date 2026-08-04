@@ -11,9 +11,13 @@ import { MailtoLink } from "@/features/contact/components/mailto-link";
 const CONTACT_DESCRIPTION =
   "Questions, project ideas, or just want to say hi — drop a message below.";
 
-/** Metadata trang liên hệ — title và mô tả cố định. */
+/** Metadata trang liên hệ — title, mô tả và canonical cố định. */
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Contact", description: CONTACT_DESCRIPTION };
+  return {
+    title: "Contact",
+    description: CONTACT_DESCRIPTION,
+    alternates: { canonical: "/contact" },
+  };
 }
 
 /** Trang liên hệ — RSC shell với header, mailto fallback và form island. */

@@ -7,7 +7,7 @@ import { FloatingHeader } from "@/components/layout/floating-header";
 import { ScrollArea } from "@/components/layout/scroll-area";
 import { MDX } from "@/components/mdx/mdx";
 import { Prose } from "@/components/ui/typography";
-import { siteConfig } from "@/config/site";
+import { SITE_URL, siteConfig } from "@/config/site";
 import { getAllCraftPosts, getCraftPostBySlug } from "@/features/craft/data/posts";
 import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
@@ -33,7 +33,12 @@ export async function generateMetadata({
   }
 
   const { title, description } = post.metadata;
-  return { title, description };
+  return {
+    title,
+    description,
+    alternates: { canonical: `/craft/${post.slug}` },
+    openGraph: { type: "article" },
+  };
 }
 
 /** Trang craft post — MDX body, JSON-LD `BlogPosting`, link quay lại index. */
@@ -55,12 +60,16 @@ export default async function CraftPostPage({ params }: { params: Promise<{ slug
     description,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `/craft/${post.slug}`,
+      "@id": `${SITE_URL}/craft/${post.slug}`,
     },
     headline: title,
     image: post.metadata.image,
     dateModified: isoDate,
-    author: siteConfig.name,
+    author: {
+      "@type": "Person",
+      name: siteConfig.name,
+      url: SITE_URL,
+    },
     isAccessibleForFree: true,
   };
 
