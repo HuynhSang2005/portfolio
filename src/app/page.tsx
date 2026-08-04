@@ -73,7 +73,7 @@ export default async function Page() {
 
           <RevealOnLoad delay={0.3} duration={0.6}>
             <SkillsVenn
-              profileImage="/assets/profile.jpg"
+              profileImage="/assets/avatar-portfolio.png"
               skills={siteConfig.skillsVenn}
               className="mt-8"
             />
