@@ -20,6 +20,12 @@ jobs:
     name: quality
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Public build-time placeholders only — never put service-role or Resend keys here.
+    # Production values belong in Cloudflare Workers Builds / Worker secrets.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
     steps:
       - name: Checkout
         # actions/checkout@v4
