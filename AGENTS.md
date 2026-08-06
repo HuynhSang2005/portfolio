@@ -21,7 +21,11 @@ Portfolio site: Next.js 16 App Router (`src/app`), React 19, TypeScript strict, 
 | `bun run deploy`                          | OpenNext build + Workers deploy (ask first; smoke on Cloudflare / `portfolio.huynhsang.id.vn`) |
 | `bun run cf-typegen`                      | Generate Cloudflare env types                                                                  |
 
-**CI vs deploy:** GitHub Actions runs `quality` only; Cloudflare Workers Builds deploys protected `main` to production. See `docs/deploy.md`.
+**CI vs deploy:** GitHub Actions owns both gates on `main` — the `quality` job
+(runs on every PR and push) and the `deploy` job (push to `main` only, requires
+`quality` to be green). Cloudflare Workers Builds is **not** used; the deploy
+job runs `wrangler deploy` with `CLOUDFLARE_API_TOKEN` directly. See
+`docs/deploy.md`.
 
 Package manager is Bun only: `bun add`, `bun add --dev`, `bun remove`, `bun run <script>`, `bunx`. Never npm, npx, pnpm, yarn, or their lockfiles.
 
@@ -73,7 +77,10 @@ This is NOT the Next.js you know: APIs, conventions, and file structure differ f
 
 - Config: `wrangler.jsonc`, `open-next.config.ts`, `.dev.vars` / `.dev.vars.example`.
 - **Daily DX:** `bun run dev` (+ `initOpenNextCloudflareForDev` in `next.config.ts`). This is the OpenNext-recommended active development loop.
-- **Workers-true verification:** `bun run deploy` (ask first) → smoke on Cloudflare. Canonical custom domain: **`portfolio.huynhsang.id.vn`**. Prefer Workers Builds CI for reproducible production builds when available.
+- **Workers-true verification:** the GitHub `deploy` job runs on every push to
+  `main` and uses `CLOUDFLARE_API_TOKEN` to publish the OpenNext bundle via
+  `wrangler deploy`. Canonical custom domain: **`portfolio.huynhsang.id.vn`**.
+  Local `bun run deploy` is a break-glass fallback only.
 - **`bun run preview`:** optional / rare local workerd check only. **Not** a default gate. OpenNext build + workerd saturates this laptop (≈8GB usable); never run in parallel with other heavy jobs; kill leftover `workerd` after any preview.
 - Invoke OpenNext preview/deploy CLIs with **Node** (not `bunx --bun` wrapping wrangler) — Wrangler rejects the Bun runtime.
 - Avoid Node-only native modules on server paths that Workers cannot run. Bundle MDX/content for Workers (no runtime `fs` under `src/features/**/content`); keep craft videos under `public/media/craft/` so they do not shadow `/craft/[slug]`.
@@ -160,6 +167,6 @@ After editing: `bun run format` → `bun run typecheck` → `bun run lint` → r
 - Supabase project for this portfolio lives under the HuynhSang workspace/organization (project name `portfolio`); never store or commit database passwords or other secrets in docs.
 - pnpm is not installed on this machine; run pnpm-based third-party projects (e.g. the reference template) with Bun instead.
 - Ratified build strategy (in `PRODUCT.md`): replicate the `portfolio-template-ui-ux/portfolio-main` UI/UX/design/animation 100% (MIT license, author Sri Somanaath G — remove all author personal info before publishing) re-platformed to this repo's stack; user-approved phase specs/plans live under `docs/superpowers/specs/` and `docs/superpowers/plans/`.
-- Cloudflare canonical custom domain for the Worker: **`portfolio.huynhsang.id.vn`**. The apex `huynhsang.id.vn` 308-redirects legacy portfolio paths until it is reassigned. Solo delivery model: `bun run dev` daily, one GitHub `quality` source/build check, and Cloudflare Workers Builds deploys protected `main`; no preview or staging environment by default.
+- Cloudflare canonical custom domain for the Worker: **`portfolio.huynhsang.id.vn`**. The apex `huynhsang.id.vn` 308-redirects legacy portfolio paths until it is reassigned. Solo delivery model: `bun run dev` daily, one GitHub `quality` source/build check, and the same workflow's `deploy` job publishes protected `main` via `wrangler deploy` + `CLOUDFLARE_API_TOKEN`; no preview or staging environment by default.
 - `initOpenNextCloudflareForDev` is gated behind `OPENNEXT_CLOUDFLARE_DEV=1` (default off) so daily `bun run dev` stays light and avoids Turbopack memory-threshold restarts that spuriously 404 `/`.
 - Cloudflare Workers Free gzip script limit is ~3 MiB: precompile MDX via `scripts/bundle-mdx-content.ts` (no runtime MDX `eval` / `new Function`), keep Shiki language sets slim, and avoid full `shiki` bundles that blow the Worker.

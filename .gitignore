@@ -48,6 +48,9 @@ next-env.d.ts
 # OpenNext
 .open-next
 
+# Wrangler / OpenNext deploy dry-run output
+/dist
+
 # wrangler files
 .wrangler
 .dev.vars*

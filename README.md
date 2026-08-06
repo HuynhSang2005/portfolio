@@ -37,8 +37,10 @@ bun run dev
 
 ## Delivery
 
-- **GitHub Actions** runs one `quality` check (`bun run validate`). It does **not** deploy.
-- **Cloudflare Workers Builds** deploys protected `main` to the production Worker only.
+- **GitHub Actions** owns both gates on `main`:
+  - `quality` — runs on every PR and push (`bun run validate` + OpenNext build).
+  - `deploy` — push to `main` only, requires `quality` to pass, publishes the
+    OpenNext bundle via `wrangler deploy` using `CLOUDFLARE_API_TOKEN`.
 - Canonical production origin: `https://portfolio.huynhsang.id.vn`.
 - Deployment, smoke, diagnostics, and rollback: [`docs/deploy.md`](docs/deploy.md).
 

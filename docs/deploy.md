@@ -5,12 +5,20 @@ This portfolio uses one Cloudflare Worker: **`portfolio`** at
 
 ## Ownership
 
-- GitHub Actions runs the source and production-build check: `bun run validate`.
-- Cloudflare Workers Builds deploys protected `main` to `portfolio`.
+- **GitHub Actions** is the single source of build truth.
+  - The `quality` job runs on every PR and on every push to `main`:
+    `bun install --frozen-lockfile` → `bun run format:check` → `bun run typecheck`
+    → `bun run lint` → `bun run test:run` → `bun run build` → OpenNext build.
+  - The `deploy` job runs **only** on a successful push to `main` and publishes
+    the OpenNext bundle via `wrangler deploy` using the
+    `CLOUDFLARE_API_TOKEN` secret. No preview/staging environments are wired.
+- **Cloudflare dashboard** owns the runtime configuration that the bundle reads
+  (Worker settings, variables, secrets, custom domain, R2 bucket, rate limiter).
 - Local `bun run deploy` is a break-glass production action and needs owner approval.
 
-GitHub Actions never receives a Cloudflare deploy token. Do not configure preview
-or staging Workers for this site unless a recurring, concrete need is established.
+GitHub Actions is the only path that mutates the live Worker. The Wrangler OAuth
+token is for local diagnostics only — it does not have the
+"Workers Scripts: Edit" scope required for a remote deploy.
 
 ## Production resources
 
@@ -37,6 +45,19 @@ Browser-safe values belong in the matching production build/runtime configuratio
 
 Never commit real values and never prefix a service-role key with `NEXT_PUBLIC_`.
 
+## GitHub Actions secrets (one-time)
+
+`Settings → Secrets and variables → Actions → Repository secrets`:
+
+| Secret                  | Purpose                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with **Workers Scripts: Edit** scope for the `portfolio` worker.  |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID hosting `portfolio`. Visible in the dashboard URL.               |
+
+Use a Cloudflare **API Token** (not the Wrangler OAuth) so the scope is explicit
+and revokable from a single place. The token never needs Workers KV/D1/Queues
+scopes for this site.
+
 ## Daily commands
 
 ```bash
@@ -54,23 +75,34 @@ bun run test:e2e:visual
 `bun run preview` is optional Workers-runtime debugging only. It is not a routine
 gate on this machine because workerd is memory-intensive.
 
-## Configure Workers Builds once
+## Branch protection
 
-In Cloudflare: **Workers & Pages → portfolio → Settings → Builds**.
+After the first green `quality / quality` run on `main`, enable branch protection:
 
-1. Connect the GitHub repository.
-2. Select production branch `main`.
-3. Leave non-production branch builds disabled.
-4. Set:
+- Require a pull request before merging.
+- Require the `quality / quality` check to pass before merging (`strict: true`).
+- Disallow force pushes; allow the owner a break-glass bypass via the GitHub
+  admin override if needed.
+- Do not require the `deploy` job as a merge gate — it only runs on `main` and
+  will always show "skipped" on PR branches.
 
-| Field          | Value                                                                                                                  |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Build command  | `bun install --frozen-lockfile && bun run build && node ./node_modules/@opennextjs/cloudflare/dist/cli/index.js build` |
-| Deploy command | `node ./node_modules/@opennextjs/cloudflare/dist/cli/index.js deploy`                                                  |
+`gh api` snippet (run once, owner-only):
 
-After the first successful `quality` workflow run, protect `main` with only the
-`quality / quality` required check. Disallow force pushes; keep an owner
-break-glass path for incidents.
+```bash
+gh api \
+  --method PUT \
+  -H "Accept: application/vnd.github+json" \
+  repos/HuynhSang2005/portfolio/branches/main/protection \
+  -f required_status_checks='{"strict":true,"contexts":["quality / quality"]}' \
+  -f enforce_admins=false \
+  -f required_pull_request_reviews='{"required_approving_review_count":0,"dismiss_stale_reviews":true}' \
+  -f restrictions='null' \
+  -f allow_force_pushes=false \
+  -f allow_deletions=false \
+  -f required_linear_history=false \
+  -f required_conversation_resolution=true \
+  -f block_creations=false
+```
 
 ## Manual production deploy
 
@@ -78,8 +110,8 @@ break-glass path for incidents.
 bun run deploy
 ```
 
-Ask the owner before running it. The scripts invoke OpenNext/Wrangler through Node
-because Wrangler rejects the Bun runtime.
+Ask the owner before running it. The scripts invoke OpenNext/Wrangler through
+Node because Wrangler rejects the Bun runtime.
 
 ## Post-deploy smoke
 
@@ -90,7 +122,7 @@ because Wrangler rejects the Bun runtime.
 4. Check Worker Logs only if there is an error; do not log message content,
    email addresses, API keys, or service-role keys.
 
-Keep release evidence small: commit SHA, Workers Build/version link, canonical URL
+Keep release evidence small: commit SHA, workflow run URL, canonical URL
 result, and any redacted diagnostic note.
 
 ## Rollback and diagnosis
@@ -98,10 +130,10 @@ result, and any redacted diagnostic note.
 Owner-approved rollback: **Cloudflare → Workers & Pages → portfolio → Deployments**
 and restore the prior known-good version. Then re-run the canonical HTTP smoke.
 
-| Symptom                | First action                                                                                         |
-| ---------------------- | ---------------------------------------------------------------------------------------------------- |
-| GitHub `quality` fails | Run `bun run validate` locally                                                                       |
-| Workers Build fails    | Inspect the Cloudflare build log; run `bun run build` locally                                        |
-| Cache/binding failure  | Verify `portfolio-cache` binding and regenerate types with `bun run cf-typegen` after config changes |
-| Contact fails          | Verify Turnstile, Resend, recipient, and limiter bindings/secrets in the production Worker           |
-| Production regression  | Roll back the Worker version, smoke the canonical origin, then investigate                           |
+| Symptom                | First action                                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `quality` fails        | Read the failing step; the workflow prints the failing `bun run` command and a focused error         |
+| `deploy` fails         | Re-run the workflow (`Actions → quality → Re-run jobs`); if the bundle is broken, roll back via the dashboard |
+| Cache/binding failure  | Verify `portfolio-cache` binding and regenerate types with `bun run cf-typegen` after config changes  |
+| Contact fails          | Verify Turnstile, Resend, recipient, and limiter bindings/secrets in the production Worker            |
+| Production regression  | Roll back the Worker version, smoke the canonical origin, then investigate                            |
