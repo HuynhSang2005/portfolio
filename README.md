@@ -23,15 +23,23 @@ bun run dev
 
 ## Scripts
 
-| Command            | Purpose                                      |
-| ------------------ | -------------------------------------------- |
-| `bun run dev`      | Local Next.js development                    |
-| `bun run preview`  | Build and preview in Workers runtime         |
-| `bun run build`    | Next.js production build                     |
-| `bun run check`    | typecheck + lint + format:check + unit tests |
-| `bun run validate` | check + build                                |
-| `bun run test:run` | Vitest once                                  |
-| `bun run test:e2e` | Playwright e2e                               |
-| `bun run deploy`   | Deploy to Cloudflare Workers (explicit only) |
+| Command                   | Purpose                                           |
+| ------------------------- | ------------------------------------------------- |
+| `bun run dev`             | Local Next.js development                         |
+| `bun run build`           | Next.js production build                          |
+| `bun run check`           | typecheck + lint + format:check + unit tests      |
+| `bun run validate`        | check + build (never deploys)                     |
+| `bun run test:run`        | Vitest once                                       |
+| `bun run test:e2e:smoke`  | Local Playwright smoke                            |
+| `bun run test:e2e:visual` | Local clone-owned visual regression               |
+| `bun run preview`         | Optional local Workers runtime — not a merge gate |
+| `bun run deploy`          | Break-glass production deploy (owner only)        |
+
+## Delivery
+
+- **GitHub Actions** runs one `quality` check (`bun run validate`). It does **not** deploy.
+- **Cloudflare Workers Builds** deploys protected `main` to the production Worker only.
+- Canonical production origin: `https://portfolio.huynhsang.id.vn`.
+- Deployment, smoke, diagnostics, and rollback: [`docs/deploy.md`](docs/deploy.md).
 
 See `AGENTS.md` for agent/contributor conventions.

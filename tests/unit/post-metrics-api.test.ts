@@ -1,10 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const rpcMock = vi.fn();
 const selectMock = vi.fn();
 const eqMock = vi.fn();
 const maybeSingleMock = vi.fn();
 const assertPublishedSlugMock = vi.fn();
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: async () => ({

@@ -4,20 +4,24 @@ Portfolio site: Next.js 16 App Router (`src/app`), React 19, TypeScript strict, 
 
 ## Commands
 
-| Command                                   | Purpose                                                                              |
-| ----------------------------------------- | ------------------------------------------------------------------------------------ |
-| `bun run dev`                             | Next.js dev server (Turbopack)                                                       |
-| `bun run build` / `bun run start`         | Next production build / serve                                                        |
-| `bun run typecheck`                       | `tsc --noEmit`                                                                       |
-| `bun run lint` / `bun run lint:fix`       | Oxlint (only linter)                                                                 |
-| `bun run format` / `bun run format:check` | Oxfmt (only formatter)                                                               |
-| `bun run test` / `bun run test:run`       | Vitest (watch / single run)                                                          |
-| `bun run test:e2e`                        | Playwright e2e                                                                       |
-| `bun run check`                           | typecheck + lint + format:check + test:run                                           |
-| `bun run validate`                        | check + build                                                                        |
-| `bun run preview`                         | OpenNext build + **local** Workers preview (optional/rare; not a default gate)       |
-| `bun run deploy`                          | OpenNext build + Workers deploy (ask first; smoke on Cloudflare / `huynhsang.id.vn`) |
-| `bun run cf-typegen`                      | Generate Cloudflare env types                                                        |
+| Command                                   | Purpose                                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `bun run dev`                             | Next.js dev server (Turbopack)                                                                 |
+| `bun run build` / `bun run start`         | Next production build / serve                                                                  |
+| `bun run typecheck`                       | `tsc --noEmit`                                                                                 |
+| `bun run lint` / `bun run lint:fix`       | Oxlint (only linter)                                                                           |
+| `bun run format` / `bun run format:check` | Oxfmt (only formatter)                                                                         |
+| `bun run test` / `bun run test:run`       | Vitest (watch / single run)                                                                    |
+| `bun run test:e2e`                        | Playwright (all e2e specs)                                                                     |
+| `bun run test:e2e:smoke`                  | Local Playwright smoke                                                                         |
+| `bun run test:e2e:visual`                 | Local clone-owned visual regression                                                            |
+| `bun run check`                           | typecheck + lint + format:check + test:run                                                     |
+| `bun run validate`                        | check + build (never deploys)                                                                  |
+| `bun run preview`                         | OpenNext build + **local** Workers preview (optional/rare; not a default gate)                 |
+| `bun run deploy`                          | OpenNext build + Workers deploy (ask first; smoke on Cloudflare / `portfolio.huynhsang.id.vn`) |
+| `bun run cf-typegen`                      | Generate Cloudflare env types                                                                  |
+
+**CI vs deploy:** GitHub Actions runs `quality` only; Cloudflare Workers Builds deploys protected `main` to production. See `docs/deploy.md`.
 
 Package manager is Bun only: `bun add`, `bun add --dev`, `bun remove`, `bun run <script>`, `bunx`. Never npm, npx, pnpm, yarn, or their lockfiles.
 
@@ -69,7 +73,7 @@ This is NOT the Next.js you know: APIs, conventions, and file structure differ f
 
 - Config: `wrangler.jsonc`, `open-next.config.ts`, `.dev.vars` / `.dev.vars.example`.
 - **Daily DX:** `bun run dev` (+ `initOpenNextCloudflareForDev` in `next.config.ts`). This is the OpenNext-recommended active development loop.
-- **Workers-true verification:** `bun run deploy` (ask first) → smoke on Cloudflare. Custom domain: **`huynhsang.id.vn`**. Prefer Workers Builds CI for reproducible production builds when available.
+- **Workers-true verification:** `bun run deploy` (ask first) → smoke on Cloudflare. Canonical custom domain: **`portfolio.huynhsang.id.vn`**. Prefer Workers Builds CI for reproducible production builds when available.
 - **`bun run preview`:** optional / rare local workerd check only. **Not** a default gate. OpenNext build + workerd saturates this laptop (≈8GB usable); never run in parallel with other heavy jobs; kill leftover `workerd` after any preview.
 - Invoke OpenNext preview/deploy CLIs with **Node** (not `bunx --bun` wrapping wrangler) — Wrangler rejects the Bun runtime.
 - Avoid Node-only native modules on server paths that Workers cannot run. Bundle MDX/content for Workers (no runtime `fs` under `src/features/**/content`); keep craft videos under `public/media/craft/` so they do not shadow `/craft/[slug]`.
@@ -156,6 +160,6 @@ After editing: `bun run format` → `bun run typecheck` → `bun run lint` → r
 - Supabase project for this portfolio lives under the HuynhSang workspace/organization (project name `portfolio`); never store or commit database passwords or other secrets in docs.
 - pnpm is not installed on this machine; run pnpm-based third-party projects (e.g. the reference template) with Bun instead.
 - Ratified build strategy (in `PRODUCT.md`): replicate the `portfolio-template-ui-ux/portfolio-main` UI/UX/design/animation 100% (MIT license, author Sri Somanaath G — remove all author personal info before publishing) re-platformed to this repo's stack; user-approved phase specs/plans live under `docs/superpowers/specs/` and `docs/superpowers/plans/`.
-- Cloudflare custom domain for the Worker: **`huynhsang.id.vn`**. Workers DX ratified 2026-08-03: develop with `bun run dev`; verify bindings/rate-limit/Resend via deploy + remote smoke — not local `bun run preview` as a completion gate.
+- Cloudflare canonical custom domain for the Worker: **`portfolio.huynhsang.id.vn`**. The apex `huynhsang.id.vn` 308-redirects legacy portfolio paths until it is reassigned. Solo delivery model: `bun run dev` daily, one GitHub `quality` source/build check, and Cloudflare Workers Builds deploys protected `main`; no preview or staging environment by default.
 - `initOpenNextCloudflareForDev` is gated behind `OPENNEXT_CLOUDFLARE_DEV=1` (default off) so daily `bun run dev` stays light and avoids Turbopack memory-threshold restarts that spuriously 404 `/`.
 - Cloudflare Workers Free gzip script limit is ~3 MiB: precompile MDX via `scripts/bundle-mdx-content.ts` (no runtime MDX `eval` / `new Function`), keep Shiki language sets slim, and avoid full `shiki` bundles that blow the Worker.

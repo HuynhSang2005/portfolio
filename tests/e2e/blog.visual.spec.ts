@@ -8,9 +8,6 @@ import { expect, test, type Page } from "@playwright/test";
  * - Metrics row (views/likes) is masked in article snapshots — live Supabase counts drift baselines.
  */
 
-/** URL dev server clone (repo này). */
-const CLONE_URL = "http://localhost:3000";
-
 /** Ngưỡng chênh lệch pixel cho full-page screenshot (5% — nội dung động + font raster). */
 const FULL_PAGE_DIFF = { maxDiffPixelRatio: 0.05 } as const;
 
@@ -31,7 +28,7 @@ async function applyTheme(page: Page, theme: Theme) {
 /** Điều hướng blog route và chờ render ổn định. */
 async function gotoBlog(page: Page, path: string, theme: Theme) {
   await page.setViewportSize(DESKTOP_VIEWPORT);
-  await page.goto(`${CLONE_URL}${path}`, { waitUntil: "networkidle" });
+  await page.goto(path, { waitUntil: "networkidle" });
   await applyTheme(page, theme);
 }
 

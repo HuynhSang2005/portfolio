@@ -13,9 +13,6 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 /** URL dev server template gốc (portfolio-template-ui-ux). */
 const TEMPLATE_URL = "http://localhost:6969";
 
-/** URL dev server clone (repo này). */
-const CLONE_URL = "http://localhost:3000";
-
 /** Ngưỡng chênh lệch pixel cho full-page screenshot (5% — nội dung động + font raster). */
 const FULL_PAGE_DIFF = { maxDiffPixelRatio: 0.05 } as const;
 
@@ -60,7 +57,7 @@ async function applyTheme(page: Page, theme: Theme) {
 /** Điều hướng clone Home và chờ animation reveal ổn định. */
 async function gotoHome(page: Page, theme: Theme) {
   await page.setViewportSize(DESKTOP_VIEWPORT);
-  await page.goto(`${CLONE_URL}/`, { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "networkidle" });
   await applyTheme(page, theme);
 }
 
@@ -163,7 +160,7 @@ test.describe("home template paired probe", () => {
     await page.goto(TEMPLATE_URL, { waitUntil: "networkidle" });
     const templateCount = await page.locator("main section").count();
 
-    await page.goto(`${CLONE_URL}/`, { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "networkidle" });
     const cloneCount = await page.locator("main section").count();
 
     expect(cloneCount).toBe(templateCount);

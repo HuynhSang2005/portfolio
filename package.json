@@ -16,11 +16,12 @@
     "test:run": "bun run prebuild && vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts tests/e2e/contact.spec.ts",
+    "test:e2e:visual": "playwright test tests/e2e/foundation.visual.spec.ts tests/e2e/home.visual.spec.ts tests/e2e/blog.visual.spec.ts",
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test:run",
     "validate": "bun run check && bun run build",
     "preview": "opennextjs-cloudflare build && node ./node_modules/@opennextjs/cloudflare/dist/cli/index.js preview",
     "deploy": "opennextjs-cloudflare build && node ./node_modules/@opennextjs/cloudflare/dist/cli/index.js deploy",
-    "upload": "opennextjs-cloudflare build && node ./node_modules/@opennextjs/cloudflare/dist/cli/index.js upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {

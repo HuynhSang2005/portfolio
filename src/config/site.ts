@@ -9,8 +9,8 @@ export const MOBILE_SCROLL_THRESHOLD = 20;
 /** Màu theme-color meta cho light/dark mode. */
 export const META_THEME_COLORS = { light: "#ffffff", dark: "#09090b" } as const;
 
-/** Origin production — làm metadataBase, canonical, sitemap và JSON-LD absolute URLs. */
-export const SITE_URL = "https://huynhsang.id.vn";
+/** Origin canonical production — dùng cho metadata, sitemap và JSON-LD absolute URLs. */
+export const SITE_URL = "https://portfolio.huynhsang.id.vn";
 
 const navIconKeys = ["home", "craft", "bookmark", "calendar", "contact"] as const;
 const socialIconKeys = ["github", "linkedin", "x", "email"] as const;
