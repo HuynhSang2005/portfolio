@@ -3,6 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { getPublicEnv } from "@/lib/env/schema";
 
+/** Làm mới session Supabase và đồng bộ cookie cho response. */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request,

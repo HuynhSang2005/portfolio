@@ -34,7 +34,7 @@ Two mechanisms, equally weighted, that a neighboring portfolio cannot truthfully
 
 ## Capabilities and Constraints
 
-Confirmed functionality targets: public portfolio pages (profile, skills, experience, projects), a public MDX blog with views/likes, and a contact form (Turnstile + Resend). Rich project case studies, an admin dashboard for content management, and media upload/management remain planned. Craft playground, analytics, and realtime are deliberate later extensions.
+Confirmed functionality targets: public portfolio pages (profile, skills, experience, projects), a public MDX blog with views/likes, a public craft gallery (MDX case notes + theme-paired preview videos), and a contact form (Turnstile + Resend) — all shipped. Rich project case studies, an admin dashboard for content management, and media upload/management remain planned. Analytics and realtime are deliberate later extensions.
 
 Confirmed non-goals: microservices, a separate NestJS/Express backend, multi-tenant CMS, public registration, AI editor, realtime collaboration, comments, complex analytics, a full Notion-class editor.
 
@@ -43,7 +43,7 @@ Confirmed engineering constraints: full-stack inside one Next.js app (modular mo
 ### Design source and re-platform strategy (confirmed)
 
 - **Design source of truth:** the UI/UX, design, and animation of the template at `portfolio-template-ui-ux/portfolio-main` are cloned with 100% fidelity — it is the incumbent visual world, not loose inspiration.
-- **Clone scope:** core portfolio surfaces first — home, projects/case studies, blog, contact. Template extras (craft playground pages, command menu, component registry, buddy/clock/cal easter eggs, llms.txt, PWA) are later additions, re-confirmed when picked up.
+- **Clone scope:** core portfolio surfaces first — home, projects/case studies, blog, contact (all shipped, plus the craft playground pages). Remaining template extras (command menu, component registry, buddy/clock/cal easter eggs, llms.txt, PWA) are later additions, re-confirmed when picked up.
 - **Visual handling:** the template's visual system (colors, fonts, theme) is kept 100% as-is in the clone; only the author's personal content/information is replaced with the owner's. Visual customization is deferred and happens after the clone is complete.
 - **Re-platforming:** only shadcn-ui and Next.js overlap with the template's stack (Next.js 15, pnpm/turbo monorepo, Radix, Zod 3, Vercel services). The clone is rebuilt on this repo's stack: Next.js 16, Bun, Tailwind CSS v4, shadcn/ui with Base UI (`base-nova`), Zod 4, Supabase, Cloudflare Workers via OpenNext.
 - **Backend-dependent features:** template features backed by Vercel Postgres/Neon (views/likes), next-auth, Vercel Analytics/Speed Insights, Resend, Cal.com, or Gemini are re-implemented on this stack (Supabase + Cloudflare). No Vercel services.

@@ -2,8 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "portfolio",
+  "routes": [{ "pattern": "portfolio.huynhsang.id.vn", "custom_domain": true }],
   "compatibility_date": "2026-07-27",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
@@ -29,4 +34,6 @@
       "simple": { "limit": 3, "period": 60 },
     },
   ],
+  // OpenNext incremental cache (ISR / fetch revalidate on Workers) — docs/deploy.md.
+  "r2_buckets": [{ "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "portfolio-cache" }],
 }

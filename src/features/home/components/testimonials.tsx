@@ -60,7 +60,7 @@ function TestimonialMarquee({
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-background to-transparent" />
 
       <div
-        className="flex w-max gap-2 group-hover:[animation-play-state:paused]"
+        className="testimonial-marquee flex w-max gap-2 group-hover:[animation-play-state:paused]"
         style={{
           animationName: "marquee-scroll",
           animationDuration: `${items.length * 5}s`,
@@ -70,7 +70,12 @@ function TestimonialMarquee({
         }}
       >
         {allItems.map((item, i) => (
-          <div key={`${item.id}-${i}`} className="w-[16rem] shrink-0">
+          // Bản nhân đôi phục vụ loop — ẩn khỏi screen reader để tránh nội dung trùng.
+          <div
+            key={`${item.id}-${i}`}
+            className="w-[16rem] shrink-0"
+            aria-hidden={i >= items.length}
+          >
             <div className="h-full rounded-xl ring-1 ring-foreground/10 transition-colors ease-out ring-inset hover:bg-accent/50">
               <TestimonialCard {...item} />
             </div>
@@ -87,10 +92,14 @@ function TestimonialMarquee({
 export function Testimonials() {
   return (
     <div>
+      <h2 className="sr-only">Testimonials</h2>
       <style>{`
         @keyframes marquee-scroll {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .testimonial-marquee { animation: none !important; flex-wrap: wrap; width: 100%; }
         }
       `}</style>
 

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { assertPublishedSlug } from "@/features/blog/lib/assert-published-slug";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_LIKES_PER_USER = 3;
@@ -63,7 +64,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     return Response.json({ likes: data?.likes ?? 0, currentUserLikes: current });
   }
 
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const { data, error } = await supabase.rpc("add_post_likes", {
     p_slug: slug,
     p_count: allowed,
@@ -74,9 +75,10 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   const response = Response.json({ likes: data, currentUserLikes: current + allowed });
+  const secure = request.url.startsWith("https:") ? "; Secure" : "";
   response.headers.append(
     "set-cookie",
-    `${cookieName(slug)}=${current + allowed}; Path=/; Max-Age=${COOKIE_MAX_AGE}; HttpOnly; SameSite=Lax`,
+    `${cookieName(slug)}=${current + allowed}; Path=/; Max-Age=${COOKIE_MAX_AGE}; HttpOnly; SameSite=Lax${secure}`,
   );
   return response;
 }

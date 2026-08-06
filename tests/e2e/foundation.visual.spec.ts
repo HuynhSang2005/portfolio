@@ -1,10 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
-/** URL dev server template gốc (portfolio-template-ui-ux). */
+/** URL dev server template gốc (portfolio-template-ui-ux) — manual fidelity only. */
 const TEMPLATE_URL = "http://localhost:6969";
-
-/** URL dev server clone (repo này). */
-const CLONE_URL = "http://localhost:3000";
 
 /** Ngưỡng chênh lệch pixel cho so sánh ảnh (2% — hấp thụ sai số raster font). */
 const DIFF = { maxDiffPixelRatio: 0.02 } as const;
@@ -78,7 +75,7 @@ async function shotTemplateBaseline(page: Page, name: string, theme: Theme, view
  */
 async function shotCloneFidelity(page: Page, name: string, theme: Theme, viewport: Viewport) {
   await page.setViewportSize(viewport);
-  await page.goto(CLONE_URL, { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "networkidle" });
   await applyTheme(page, theme);
   const shot = await shotChrome(page, name);
   expect(shot).toMatchSnapshot(`${name}-${theme}.png`, DIFF);
@@ -90,7 +87,7 @@ async function shotCloneFidelity(page: Page, name: string, theme: Theme, viewpor
  */
 async function shotCloneOnly(page: Page, name: string, theme: Theme, viewport: Viewport) {
   await page.setViewportSize(viewport);
-  await page.goto(CLONE_URL, { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "networkidle" });
   await applyTheme(page, theme);
   const shot = await shotChrome(page, name);
   expect(shot).toMatchSnapshot(`clone-${name}-${theme}.png`, DIFF);
@@ -135,7 +132,7 @@ test.describe("foundation fidelity", () => {
 
   test("desktop dock present", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto(CLONE_URL, { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "networkidle" });
     const dock = page.locator("footer").first();
     await expect(dock).toBeVisible();
     await expect(dock.getByRole("link")).toHaveCount(3);
@@ -182,7 +179,7 @@ test.describe("foundation fidelity", () => {
     await page.goto(TEMPLATE_URL, { waitUntil: "networkidle" });
     const templateTokens = await page.evaluate(probe);
 
-    await page.goto(CLONE_URL, { waitUntil: "networkidle" });
+    await page.goto("/", { waitUntil: "networkidle" });
     const cloneTokens = await page.evaluate(probe);
 
     expect(cloneTokens.background).toEqual(templateTokens.background);

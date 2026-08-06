@@ -36,10 +36,31 @@ export function CraftCard({
 }: CraftCardProps) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const isVideo = type === "video";
   const activeSrc = srcDark && resolvedTheme === "dark" ? srcDark : src;
+
+  // Lazy: chỉ tải video khi card gần viewport. jsdom không có IntersectionObserver → coi như visible.
+  useEffect(() => {
+    if (!isVideo) {
+      return;
+    }
+
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+      rootMargin: "200px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [isVideo]);
 
   useEffect(() => {
     if (!isVideo) {
@@ -51,30 +72,25 @@ export function CraftCard({
       return;
     }
 
-    setIsVideoLoaded(false);
-    videoElement.src = activeSrc;
-    videoElement.load();
-
-    const handleLoaded = () => {
-      if (videoElement.readyState >= 3) {
-        setIsVideoLoaded(true);
-      }
-    };
-
-    videoElement.addEventListener("loadeddata", handleLoaded);
-    videoElement.addEventListener("canplay", handleLoaded);
-    videoElement.addEventListener("playing", handleLoaded);
-
-    if (videoElement.readyState >= 3) {
-      handleLoaded();
+    if (!isVisible) {
+      videoElement.pause();
+      return;
     }
 
-    return () => {
-      videoElement.removeEventListener("loadeddata", handleLoaded);
-      videoElement.removeEventListener("canplay", handleLoaded);
-      videoElement.removeEventListener("playing", handleLoaded);
-    };
-  }, [isVideo, activeSrc]);
+    // Chỉ tải (lại) khi src theme thực sự đổi — tránh download kép khi re-render.
+    if (videoElement.getAttribute("src") !== activeSrc) {
+      setIsVideoLoaded(false);
+      videoElement.src = activeSrc;
+      videoElement.load();
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    // jsdom trả undefined thay vì Promise — optional chain để test không ném lỗi.
+    void videoElement.play()?.catch(() => {});
+  }, [isVideo, isVisible, activeSrc]);
 
   return (
     <div
@@ -95,15 +111,16 @@ export function CraftCard({
           },
         )}
       >
-        <div className="relative w-full" style={{ aspectRatio }}>
+        <div ref={containerRef} className="relative w-full" style={{ aspectRatio }}>
           {isVideo ? (
             <video
               ref={videoRef}
-              src={activeSrc}
-              autoPlay
+              preload="none"
               loop
               muted
               playsInline
+              aria-hidden="true"
+              onLoadedData={() => setIsVideoLoaded(true)}
               className={cn(
                 "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
                 {
@@ -138,14 +155,14 @@ export function CraftCard({
             },
           )}
         >
-          <div
+          <h2
             className={cn("overflow-hidden text-ellipsis whitespace-nowrap text-sm", {
               "text-neutral-100": theme === "light",
               "text-neutral-900": theme === "dark",
             })}
           >
             {title}
-          </div>
+          </h2>
           <div
             className={cn("overflow-hidden text-ellipsis whitespace-nowrap text-sm", {
               "text-neutral-400": theme === "light",

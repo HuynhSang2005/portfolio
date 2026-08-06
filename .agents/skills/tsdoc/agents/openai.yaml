@@ -1,4 +1,0 @@
-interface:
-  display_name: "TSDoc"
-  short_description: "Write and audit TypeScript TSDoc comments"
-  default_prompt: "Use $tsdoc to write or review TSDoc for a TypeScript API."

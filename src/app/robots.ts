@@ -1,0 +1,11 @@
+import type { MetadataRoute } from "next";
+
+import { SITE_URL } from "@/config/site";
+
+/** robots.txt — cho phép crawl toàn bộ, trỏ tới sitemap. */
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: { userAgent: "*", allow: "/" },
+    sitemap: `${SITE_URL}/sitemap.xml`,
+  };
+}

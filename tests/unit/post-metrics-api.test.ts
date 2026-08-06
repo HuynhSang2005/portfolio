@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const rpcMock = vi.fn();
 const selectMock = vi.fn();
@@ -6,8 +6,19 @@ const eqMock = vi.fn();
 const maybeSingleMock = vi.fn();
 const assertPublishedSlugMock = vi.fn();
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 vi.mock("@/lib/supabase/server", () => ({
   createClient: async () => ({
+    rpc: rpcMock,
+    from: () => ({ select: selectMock }),
+  }),
+}));
+
+vi.mock("@/lib/supabase/admin", () => ({
+  createAdminClient: async () => ({
     rpc: rpcMock,
     from: () => ({ select: selectMock }),
   }),
@@ -36,7 +47,7 @@ describe("views route", () => {
       params: Promise.resolve({ slug: "post-a" }),
     });
     expect(res.status).toBe(200);
-    expect(await res.json()).toBe(0);
+    expect(await res.json()).toEqual({ views: 0 });
   });
 
   it("POST increments via RPC and returns the new count", async () => {
@@ -46,7 +57,22 @@ describe("views route", () => {
       params: Promise.resolve({ slug: "post-a" }),
     });
     expect(rpcMock).toHaveBeenCalledWith("increment_post_view", { p_slug: "post-a" });
-    expect(await res.json()).toBe(7);
+    expect(await res.json()).toEqual({ views: 7 });
+    expect(res.headers.get("set-cookie")).toContain("post-views-post-a=1");
+  });
+
+  it("POST skips increment when the 24h view cookie is present", async () => {
+    chainSelect({ data: { views: 7 }, error: null });
+    const { POST } = await import("@/app/api/posts/[slug]/views/route");
+    const res = await POST(
+      new Request("http://localhost", {
+        method: "POST",
+        headers: { cookie: "post-views-post-a=1" },
+      }),
+      { params: Promise.resolve({ slug: "post-a" }) },
+    );
+    expect(rpcMock).not.toHaveBeenCalled();
+    expect(await res.json()).toEqual({ views: 7 });
   });
 
   it("POST returns 404 for unpublished/unknown slug", async () => {

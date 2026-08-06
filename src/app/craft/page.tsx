@@ -4,16 +4,18 @@ import { CraftCard } from "@/app/craft/craft-card";
 import { FloatingHeader } from "@/components/layout/floating-header";
 import { ScrollArea } from "@/components/layout/scroll-area";
 import { MasonryGrid } from "@/components/ui/masonry-grid";
+import { SITE_URL } from "@/config/site";
 import { getAllCraftPosts } from "@/features/craft/data/posts";
 import { serializeJsonLd } from "@/lib/serialize-json-ld";
 
 const CRAFT_DESCRIPTION = "Interactive UI experiments and component studies.";
 
-/** Metadata trang index craft — title và mô tả cố định. */
+/** Metadata trang index craft — title, mô tả và canonical cố định. */
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Craft",
     description: CRAFT_DESCRIPTION,
+    alternates: { canonical: "/craft" },
   };
 }
 
@@ -23,7 +25,10 @@ export default async function CraftPage() {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Blog",
+    "@type": "CollectionPage",
+    name: "Craft",
+    url: `${SITE_URL}/craft`,
+    description: CRAFT_DESCRIPTION,
   };
 
   return (

@@ -41,6 +41,7 @@ async function fillForm(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText(/message/i), valid.message);
 }
 
+// userEvent typing dưới full suite (laptop 8GB) thường vượt testTimeout 5s mặc định.
 describe("ContactForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -54,9 +55,10 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /send/i }));
-    expect(await screen.findByText("Verification required")).toBeTruthy();
+    // Timeout rộng — full suite trên laptop 8GB đẩy render quá 1s mặc định.
+    expect(await screen.findByText("Verification required", {}, { timeout: 10_000 })).toBeTruthy();
     expect(sendMessageMock).not.toHaveBeenCalled();
-  });
+  }, 30_000);
 
   it("shows client-side validation errors and does not call the action", async () => {
     const user = userEvent.setup();
@@ -64,7 +66,7 @@ describe("ContactForm", () => {
     await user.click(screen.getByRole("button", { name: /send/i }));
     await waitFor(() => expect(screen.getAllByRole("alert").length).toBeGreaterThan(0));
     expect(sendMessageMock).not.toHaveBeenCalled();
-  });
+  }, 30_000);
 
   it("submits valid input and shows the success status", async () => {
     sendMessageMock.mockResolvedValue({ ok: true });
@@ -72,11 +74,13 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /send/i }));
-    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/sent/i));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/sent/i), {
+      timeout: 10_000,
+    });
     expect(sendMessageMock).toHaveBeenCalledWith(
       expect.objectContaining({ ...valid, turnstileToken: "test-token" }),
     );
-  });
+  }, 30_000);
 
   it("maps server field errors back into the form", async () => {
     sendMessageMock.mockResolvedValue({
@@ -88,8 +92,8 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /send/i }));
-    expect(await screen.findByText("Invalid email")).toBeTruthy();
-  });
+    expect(await screen.findByText("Invalid email", {}, { timeout: 10_000 })).toBeTruthy();
+  }, 30_000);
 
   it("shows a generic error for rate-limited responses", async () => {
     sendMessageMock.mockResolvedValue({ ok: false, code: "rate-limited" });
@@ -97,8 +101,10 @@ describe("ContactForm", () => {
     render(<ContactForm />);
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /send/i }));
-    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/too many/i));
-  });
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/too many/i), {
+      timeout: 10_000,
+    });
+  }, 30_000);
 
   it("remounts Turnstile after a successful submit", async () => {
     sendMessageMock.mockResolvedValue({ ok: true });
@@ -106,8 +112,10 @@ describe("ContactForm", () => {
     const { container } = render(<ContactForm />);
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /send/i }));
-    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/sent/i));
+    await waitFor(() => expect(screen.getByRole("status").textContent).toMatch(/sent/i), {
+      timeout: 10_000,
+    });
     // Stub remounts via key change; still present after reset.
     expect(container.querySelector('[data-testid="turnstile-stub"]')).toBeTruthy();
-  });
+  }, 30_000);
 });

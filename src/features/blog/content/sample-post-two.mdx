@@ -13,11 +13,11 @@ A quick tour of the pieces that make this blog work.
 
 ## The Pipeline
 
-| Stage     | Tool                   |
-| --------- | ---------------------- |
-| Parse     | yaml frontmatter       |
-| Render    | next-mdx-remote-client |
-| Highlight | rehype-pretty-code     |
+| Stage  | Tool                                     |
+| ------ | ---------------------------------------- |
+| Parse  | yaml frontmatter + remark                |
+| Render | precompiled HTML (Workers-safe, no eval) |
+| Slugs  | rehype-slug heading ids                  |
 
 > Good infrastructure disappears. You notice it only when it breaks.
 

@@ -101,12 +101,23 @@ export function ContactForm() {
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="contact-name">Name</FieldLabel>
-          <Input id="contact-name" autoComplete="name" {...form.register("name")} />
+          <Input
+            id="contact-name"
+            autoComplete="name"
+            aria-invalid={!!form.formState.errors.name}
+            {...form.register("name")}
+          />
           <FieldError errors={[form.formState.errors.name]} />
         </Field>
         <Field>
           <FieldLabel htmlFor="contact-email">Email</FieldLabel>
-          <Input id="contact-email" type="email" autoComplete="email" {...form.register("email")} />
+          <Input
+            id="contact-email"
+            type="email"
+            autoComplete="email"
+            aria-invalid={!!form.formState.errors.email}
+            {...form.register("email")}
+          />
           <FieldError errors={[form.formState.errors.email]} />
         </Field>
         <Field>
@@ -121,6 +132,7 @@ export function ContactForm() {
             id="contact-message"
             rows={5}
             className="resize-y"
+            aria-invalid={!!form.formState.errors.message}
             {...form.register("message")}
           />
           <FieldError errors={[form.formState.errors.message]} />
@@ -152,7 +164,7 @@ export function ContactForm() {
           {status && (
             <p
               role="status"
-              aria-live="polite"
+              aria-live={status.kind === "error" ? "assertive" : "polite"}
               className={
                 status.kind === "error"
                   ? "text-sm text-destructive"

@@ -17,7 +17,7 @@ interface SkillsVennProps {
 /**
  * Biểu đồ Venn 4 vòng tròn (55% w/h) với nhãn kỹ năng và avatar trung tâm — RSC, không tương tác.
  *
- * @param profileImage - Đường dẫn ảnh đại diện (ví dụ `/assets/profile.jpg`).
+ * @param profileImage - Đường dẫn ảnh đại diện (ví dụ `/assets/avatar-portfolio.png`).
  * @param skills - Nhãn 4 vị trí: top, left, right, bottom.
  */
 export function SkillsVenn({ profileImage, skills, className }: SkillsVennProps) {

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { META_THEME_COLORS, SCROLL_AREA_ID, siteConfig, siteConfigSchema } from "@/config/site";
+import {
+  META_THEME_COLORS,
+  SCROLL_AREA_ID,
+  SITE_URL,
+  siteConfig,
+  siteConfigSchema,
+} from "@/config/site";
 
 describe("siteConfig", () => {
   it("passes its own Zod schema", () => {
@@ -24,6 +30,10 @@ describe("siteConfig", () => {
   it("exposes template constants verbatim", () => {
     expect(SCROLL_AREA_ID).toBe("scroll-area-id");
     expect(META_THEME_COLORS).toEqual({ light: "#ffffff", dark: "#09090b" });
+  });
+
+  it("uses the portfolio subdomain as the canonical production origin", () => {
+    expect(SITE_URL).toBe("https://portfolio.huynhsang.id.vn");
   });
 
   it("rejects invalid config shapes", () => {
