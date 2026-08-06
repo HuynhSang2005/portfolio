@@ -32,24 +32,16 @@ afterEach(() => {
 });
 
 describe("contact page", () => {
-  it(
-    "renders header, email fallback row and the form island",
-    async () => {
-      const { default: ContactPage } = await import("@/app/contact/page");
-      renderPage(await ContactPage());
-      expect(screen.getByRole("heading", { level: 1, name: /contact/i })).toBeTruthy();
-      expect(screen.getByRole("link", { name: /@/i }).getAttribute("href")).toMatch(/^mailto:/);
-      expect(screen.getByTestId("contact-form")).toBeTruthy();
-    },
-    30_000,
-  );
+  it("renders header, email fallback row and the form island", async () => {
+    const { default: ContactPage } = await import("@/app/contact/page");
+    renderPage(await ContactPage());
+    expect(screen.getByRole("heading", { level: 1, name: /contact/i })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /@/i }).getAttribute("href")).toMatch(/^mailto:/);
+    expect(screen.getByTestId("contact-form")).toBeTruthy();
+  }, 30_000);
 
-  it(
-    "exposes metadata",
-    async () => {
-      const { generateMetadata } = await import("@/app/contact/page");
-      expect((await generateMetadata()).title).toBe("Contact");
-    },
-    30_000,
-  );
+  it("exposes metadata", async () => {
+    const { generateMetadata } = await import("@/app/contact/page");
+    expect((await generateMetadata()).title).toBe("Contact");
+  }, 30_000);
 });

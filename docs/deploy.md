@@ -49,10 +49,10 @@ Never commit real values and never prefix a service-role key with `NEXT_PUBLIC_`
 
 `Settings → Secrets and variables → Actions → Repository secrets`:
 
-| Secret                  | Purpose                                                                                |
-| ----------------------- | -------------------------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with **Workers Scripts: Edit** scope for the `portfolio` worker.  |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID hosting `portfolio`. Visible in the dashboard URL.               |
+| Secret                  | Purpose                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with **Workers Scripts: Edit** scope for the `portfolio` worker. |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID hosting `portfolio`. Visible in the dashboard URL.              |
 
 Use a Cloudflare **API Token** (not the Wrangler OAuth) so the scope is explicit
 and revokable from a single place. The token never needs Workers KV/D1/Queues
@@ -130,10 +130,10 @@ result, and any redacted diagnostic note.
 Owner-approved rollback: **Cloudflare → Workers & Pages → portfolio → Deployments**
 and restore the prior known-good version. Then re-run the canonical HTTP smoke.
 
-| Symptom                | First action                                                                                          |
-| ---------------------- | ----------------------------------------------------------------------------------------------------- |
-| `quality` fails        | Read the failing step; the workflow prints the failing `bun run` command and a focused error         |
-| `deploy` fails         | Re-run the workflow (`Actions → quality → Re-run jobs`); if the bundle is broken, roll back via the dashboard |
-| Cache/binding failure  | Verify `portfolio-cache` binding and regenerate types with `bun run cf-typegen` after config changes  |
-| Contact fails          | Verify Turnstile, Resend, recipient, and limiter bindings/secrets in the production Worker            |
-| Production regression  | Roll back the Worker version, smoke the canonical origin, then investigate                            |
+| Symptom               | First action                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `quality` fails       | Read the failing step; the workflow prints the failing `bun run` command and a focused error                  |
+| `deploy` fails        | Re-run the workflow (`Actions → quality → Re-run jobs`); if the bundle is broken, roll back via the dashboard |
+| Cache/binding failure | Verify `portfolio-cache` binding and regenerate types with `bun run cf-typegen` after config changes          |
+| Contact fails         | Verify Turnstile, Resend, recipient, and limiter bindings/secrets in the production Worker                    |
+| Production regression | Roll back the Worker version, smoke the canonical origin, then investigate                                    |
