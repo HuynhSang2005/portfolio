@@ -22,9 +22,10 @@ Portfolio site: Next.js 16 App Router (`src/app`), React 19, TypeScript strict, 
 | `bun run cf-typegen`                      | Generate Cloudflare env types                                                                  |
 
 **CI vs deploy:** GitHub Actions owns both gates on `main` — the `quality` job
-(runs on every PR and push) and the `deploy` job (push to `main` only, requires
-`quality` to be green). Cloudflare Workers Builds is **not** used; the deploy
-job runs `wrangler deploy` with `CLOUDFLARE_API_TOKEN` directly. See
+(runs on every PR and push, split steps for fail-fast) and the `deploy` job
+(push to `main` only, requires `quality` to be green, deploys the exact
+`quality` artifact via `wrangler deploy`). Cloudflare Workers Builds is **not**
+used; secrets are `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. See
 `docs/deploy.md`.
 
 Package manager is Bun only: `bun add`, `bun add --dev`, `bun remove`, `bun run <script>`, `bunx`. Never npm, npx, pnpm, yarn, or their lockfiles.
@@ -78,9 +79,10 @@ This is NOT the Next.js you know: APIs, conventions, and file structure differ f
 - Config: `wrangler.jsonc`, `open-next.config.ts`, `.dev.vars` / `.dev.vars.example`.
 - **Daily DX:** `bun run dev` (+ `initOpenNextCloudflareForDev` in `next.config.ts`). This is the OpenNext-recommended active development loop.
 - **Workers-true verification:** the GitHub `deploy` job runs on every push to
-  `main` and uses `CLOUDFLARE_API_TOKEN` to publish the OpenNext bundle via
-  `wrangler deploy`. Canonical custom domain: **`portfolio.huynhsang.id.vn`**.
-  Local `bun run deploy` is a break-glass fallback only.
+  `main` and uses `CLOUDFLARE_API_TOKEN` to publish the exact `quality` artifact
+  (`.open-next` bundle, no rebuild) via `wrangler deploy`, then runs a canonical
+  GET smoke. Canonical custom domain: **`portfolio.huynhsang.id.vn`**. Local
+  `bun run deploy` is a break-glass fallback only.
 - **`bun run preview`:** optional / rare local workerd check only. **Not** a default gate. OpenNext build + workerd saturates this laptop (≈8GB usable); never run in parallel with other heavy jobs; kill leftover `workerd` after any preview.
 - Invoke OpenNext preview/deploy CLIs with **Node** (not `bunx --bun` wrapping wrangler) — Wrangler rejects the Bun runtime.
 - Avoid Node-only native modules on server paths that Workers cannot run. Bundle MDX/content for Workers (no runtime `fs` under `src/features/**/content`); keep craft videos under `public/media/craft/` so they do not shadow `/craft/[slug]`.

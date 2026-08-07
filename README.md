@@ -38,7 +38,7 @@ bun run dev
 ## Delivery
 
 - **GitHub Actions** owns both gates on `main`:
-  - `quality` — runs on every PR and push (`bun run validate` + OpenNext build).
+  - `quality` — runs on every PR and push (`format:check` → `typecheck` → `lint` → `test:run` → `build` → OpenNext build).
   - `deploy` — push to `main` only, requires `quality` to pass, publishes the
     OpenNext bundle via `wrangler deploy` using `CLOUDFLARE_API_TOKEN`.
 - Canonical production origin: `https://portfolio.huynhsang.id.vn`.
