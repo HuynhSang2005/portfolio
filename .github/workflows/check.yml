@@ -104,4 +104,3 @@ jobs:
             test "$status" = 200 || { echo "${path}: HTTP ${status}"; exit 1; }
             echo "${path}: HTTP 200"
           done
-
