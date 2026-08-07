@@ -37,10 +37,10 @@ bun run dev
 
 ## Delivery
 
-- **GitHub Actions** owns both gates on `main`:
-  - `quality` — runs on every PR and push (`bun run validate` + OpenNext build).
-  - `deploy` — push to `main` only, requires `quality` to pass, publishes the
-    OpenNext bundle via `wrangler deploy` using `CLOUDFLARE_API_TOKEN`.
+- **GitHub Actions** owns the `quality` gate (CI) on `main`:
+  `format:check` → `typecheck` → `lint` → `test:run` → `build`.
+- **Cloudflare Workers Builds** owns deployment (CD): connected to this
+  repository, it builds and deploys the Worker on every push to `main`.
 - Canonical production origin: `https://portfolio.huynhsang.id.vn`.
 - Deployment, smoke, diagnostics, and rollback: [`docs/deploy.md`](docs/deploy.md).
 
